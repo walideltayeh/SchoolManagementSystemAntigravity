@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
-import { 
-  Bus, 
-  User, 
-  MapPin, 
-  Clock, 
-  Search, 
-  MoreHorizontal, 
+import {
+  Bus,
+  User,
+  MapPin,
+  Clock,
+  Search,
+  MoreHorizontal,
   Plus,
   Route,
   Calendar,
@@ -15,21 +15,21 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
 } from "@/components/ui/table";
-import { 
-  DropdownMenu, 
-  DropdownMenuContent, 
-  DropdownMenuItem, 
-  DropdownMenuLabel, 
-  DropdownMenuSeparator, 
-  DropdownMenuTrigger 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -101,7 +101,7 @@ export default function Transport() {
       .from('bus_routes')
       .select('*')
       .order('name');
-    
+
     if (error) {
       toast({
         title: "Error",
@@ -110,7 +110,7 @@ export default function Transport() {
       });
       return;
     }
-    
+
     setBusRoutes(data || []);
   };
 
@@ -120,7 +120,7 @@ export default function Transport() {
       .select('*')
       .eq('status', 'active')
       .order('full_name');
-    
+
     if (error) {
       toast({
         title: "Error",
@@ -129,7 +129,7 @@ export default function Transport() {
       });
       return;
     }
-    
+
     setStudents(data || []);
   };
 
@@ -138,12 +138,12 @@ export default function Transport() {
       .from('bus_assignments')
       .select('*')
       .eq('status', 'active');
-    
+
     if (error) {
       console.error("Failed to load bus assignments:", error);
       return;
     }
-    
+
     setAllAssignments(data || []);
   };
 
@@ -152,12 +152,12 @@ export default function Transport() {
       .from('bus_stops')
       .select('*')
       .order('stop_order');
-    
+
     if (error) {
       console.error("Failed to load bus stops:", error);
       return;
     }
-    
+
     setBusStops(data || []);
   };
 
@@ -168,7 +168,7 @@ export default function Transport() {
       .select('*')
       .eq('route_id', routeId)
       .order('stop_order');
-    
+
     if (stopsError) {
       toast({
         title: "Error",
@@ -189,7 +189,7 @@ export default function Transport() {
       `)
       .eq('route_id', routeId)
       .eq('status', 'active');
-    
+
     if (assignmentsError) {
       toast({
         title: "Error",
@@ -305,7 +305,7 @@ export default function Transport() {
       fetchRouteDetails(selectedRoute);
     }
   };
-  
+
   const filteredRoutes = busRoutes.filter(route =>
     route.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     route.route_code.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -315,7 +315,7 @@ export default function Transport() {
   const handleRouteSelect = (routeId: string) => {
     setSelectedRoute(routeId === selectedRoute ? null : routeId);
   };
-  
+
   const handleExport = () => {
     // Create CSV content for bus routes
     const headers = ["ID", "Name", "Code", "Driver", "Phone", "Departure", "Return", "Status"];
@@ -332,7 +332,7 @@ export default function Transport() {
         route.status
       ].join(','))
     ].join('\n');
-    
+
     // Create a blob and download link
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
@@ -343,7 +343,7 @@ export default function Transport() {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    
+
     toast({
       title: "Export Successful",
       description: "Bus routes data has been exported as CSV",
@@ -369,7 +369,7 @@ export default function Transport() {
           </Button>
         </div>
       </div>
-      
+
       <Card>
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between">
@@ -403,11 +403,11 @@ export default function Transport() {
             </TableHeader>
             <TableBody>
               {filteredRoutes.map((route) => (
-                <TableRow key={route.id} className={selectedRoute === route.id ? "bg-muted" : ""}>
+                <TableRow key={route.id} className={selectedRoute === route.id ? "bg-apple-blue/5 border-l-2 border-l-apple-blue" : "hover:bg-apple-gray-50"}>
                   <TableCell>
                     <div className="flex items-center gap-3">
-                      <div className="h-10 w-10 rounded-full bg-school-light flex items-center justify-center">
-                        <Bus className="h-5 w-5 text-school-primary" />
+                      <div className="h-10 w-10 rounded-full bg-apple-gray-100 flex items-center justify-center">
+                        <Bus className="h-5 w-5 text-apple-gray-600" />
                       </div>
                       <div>
                         <p className="font-medium">{route.name}</p>
@@ -444,7 +444,7 @@ export default function Transport() {
                     </div>
                   </TableCell>
                   <TableCell>
-                    <Badge variant={route.status === "active" ? "default" : "secondary"} className={route.status === "active" ? "bg-school-success" : "bg-muted"}>
+                    <Badge variant={route.status === "active" ? "default" : "secondary"} className={route.status === "active" ? "bg-green-50 text-green-700 hover:bg-green-100 border-green-200" : "bg-apple-gray-100 text-apple-gray-600"}>
                       {route.status === "active" ? "Active" : "Inactive"}
                     </Badge>
                   </TableCell>
@@ -500,7 +500,7 @@ export default function Transport() {
           </div>
         </CardFooter>
       </Card>
-      
+
       {selectedRoute && (
         <>
           <Card>
@@ -512,11 +512,11 @@ export default function Transport() {
             </CardHeader>
             <CardContent>
               <Tabs defaultValue="stops">
-                <TabsList className="mb-4">
-                  <TabsTrigger value="stops">Bus Stops</TabsTrigger>
-                  <TabsTrigger value="students">Assigned Students</TabsTrigger>
+                <TabsList className="mb-6 w-full justify-start h-auto p-1 bg-white/50 backdrop-blur-sm rounded-full border border-apple-gray-200 inline-flex gap-1">
+                  <TabsTrigger value="stops" className="rounded-full px-4 py-2 data-[state=active]:bg-apple-blue data-[state=active]:text-white data-[state=active]:shadow-sm transition-all hover:bg-apple-gray-100">Bus Stops</TabsTrigger>
+                  <TabsTrigger value="students" className="rounded-full px-4 py-2 data-[state=active]:bg-apple-blue data-[state=active]:text-white data-[state=active]:shadow-sm transition-all hover:bg-apple-gray-100">Assigned Students</TabsTrigger>
                 </TabsList>
-                
+
                 <TabsContent value="stops" className="space-y-4">
                   {busStops.length === 0 ? (
                     <p className="text-center text-muted-foreground py-8">No bus stops configured for this route</p>
@@ -524,7 +524,7 @@ export default function Transport() {
                     busStops.map((stop) => (
                       <div key={stop.id} className="flex items-center justify-between rounded-lg border p-3">
                         <div className="flex items-center gap-3">
-                          <div className="h-8 w-8 rounded-full bg-amber-100 flex items-center justify-center">
+                          <div className="h-8 w-8 rounded-full bg-amber-50 flex items-center justify-center">
                             <MapPin className="h-4 w-4 text-amber-600" />
                           </div>
                           <div>
@@ -543,7 +543,7 @@ export default function Transport() {
                     ))
                   )}
                 </TabsContent>
-                
+
                 <TabsContent value="students">
                   {assignedStudents.length === 0 ? (
                     <p className="text-center text-muted-foreground py-8">No students assigned to this route yet</p>
@@ -600,7 +600,7 @@ export default function Transport() {
                                       Reassign Stop
                                     </DropdownMenuItem>
                                     <DropdownMenuSeparator />
-                                    <DropdownMenuItem 
+                                    <DropdownMenuItem
                                       className="text-destructive"
                                       onClick={() => {
                                         setSelectedAssignmentId(assignment.id);
@@ -623,7 +623,7 @@ export default function Transport() {
               </Tabs>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardHeader>
               <CardTitle>Quick Actions</CardTitle>
@@ -632,16 +632,16 @@ export default function Transport() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <Button 
-                variant="blue" 
+              <Button
+                variant="blue"
                 className="w-full justify-start"
                 onClick={() => navigate("/attendance")}
               >
                 <Bus className="mr-2 h-4 w-4" />
                 Start Bus Check-in
               </Button>
-              <Button 
-                variant="blue-outline" 
+              <Button
+                variant="blue-outline"
                 className="w-full justify-start"
                 onClick={() => {
                   if (!selectedRoute) {
@@ -658,23 +658,23 @@ export default function Transport() {
                 <UserPlus className="mr-2 h-4 w-4" />
                 Assign New Student
               </Button>
-              <Button 
-                variant="blue-outline" 
+              <Button
+                variant="blue-outline"
                 className="w-full justify-start"
                 onClick={() => navigate("/admin")}
               >
                 <Plus className="mr-2 h-4 w-4" />
                 Add Bus Stop
               </Button>
-              <Button 
-                variant="blue-outline" 
+              <Button
+                variant="blue-outline"
                 className="w-full justify-start"
                 onClick={() => navigate("/calendar")}
               >
                 <Calendar className="mr-2 h-4 w-4" />
                 Modify Schedule
               </Button>
-              
+
               <div className="rounded-lg border p-4 mt-6">
                 <h4 className="font-semibold mb-3">Today's Schedule</h4>
                 <div className="space-y-3">
@@ -709,7 +709,7 @@ export default function Transport() {
               Select a student and bus stop to assign to {busRoutes.find(r => r.id === selectedRoute)?.name}
             </DialogDescription>
           </DialogHeader>
-          
+
           <div className="space-y-4 py-4">
             <div className="space-y-2">
               <Label>Student</Label>
@@ -738,8 +738,8 @@ export default function Transport() {
                   <p className="text-xs text-muted-foreground mb-3">
                     To assign students, you need to add bus stops first. Bus stops are automatically created when you register a student with a home address and bus requirement enabled.
                   </p>
-                  <Button 
-                    variant="outline" 
+                  <Button
+                    variant="outline"
                     size="sm"
                     onClick={() => {
                       setAssignDialogOpen(false);
@@ -807,7 +807,7 @@ export default function Transport() {
               Select a new bus stop for this student on {busRoutes.find(r => r.id === selectedRoute)?.name}
             </DialogDescription>
           </DialogHeader>
-          
+
           <div className="space-y-4 py-4">
             <div className="space-y-2">
               <Label>New Bus Stop</Label>

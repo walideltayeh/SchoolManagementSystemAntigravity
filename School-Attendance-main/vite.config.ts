@@ -16,7 +16,7 @@ export default defineConfig(({ mode }) => ({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'robots.txt', 'apple-touch-icon.png'],
       devOptions: {
-        enabled: true
+        enabled: false
       },
       manifest: {
         name: 'School Connect - Parent Portal',

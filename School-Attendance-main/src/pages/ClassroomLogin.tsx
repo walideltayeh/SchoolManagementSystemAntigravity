@@ -1,12 +1,10 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
-import { LogOut, Clock, BookOpen, MapPin } from "lucide-react";
+import { LogOut, Clock, BookOpen, MapPin, ChevronRight } from "lucide-react";
 import { QRScanner } from "@/components/attendance/QRScanner";
 import { AttendanceScanner } from "@/components/attendance/AttendanceScanner";
 
@@ -74,7 +72,6 @@ export default function ClassroomLogin() {
 
   const loadRoomInfo = async () => {
     try {
-      // Note: roomId from URL is the room NAME (like 'RM001'), not a UUID
       const { data: room } = await supabase
         .from("rooms")
         .select("*")
@@ -134,7 +131,6 @@ export default function ClassroomLogin() {
       const todayIndex = new Date().getDay();
       let today: string = dayNames[todayIndex];
 
-      // FOR TESTING: Map weekend to Monday so user can see classes
       if (today === 'Sunday' || today === 'Saturday') {
         console.log("Weekend detected, defaulting to Monday for testing");
         today = 'Monday';
@@ -157,16 +153,9 @@ export default function ClassroomLogin() {
 
       if (error) throw error;
 
-      console.log("Schedule query params:", { selectedTeacherId, today });
-      console.log("Schedule query raw result:", data);
-
-      // Filter by teacher_id client-side since nested filters on related tables 
-      // don't always work correctly with Supabase
       const filteredData = (data || []).filter((entry: any) =>
         entry.classes?.teacher_id === selectedTeacherId
       );
-
-      console.log("Filtered by teacher:", filteredData);
 
       const scheduleEntries: ScheduleEntry[] = filteredData.map((entry: any) => ({
         id: entry.id,
@@ -207,7 +196,6 @@ export default function ClassroomLogin() {
     try {
       setLoading(true);
 
-      // If input doesn't start with "STUDENT:", treat it as a student_code and look it up
       let studentQrCode = qrCode;
       if (!qrCode.startsWith("STUDENT:")) {
         const { data: student, error: studentError } = await supabase
@@ -237,7 +225,6 @@ export default function ClassroomLogin() {
         studentQrCode = student.qr_code!;
       }
 
-      // Call the validation function
       const { data: validationData, error: validationError } = await supabase
         .rpc("validate_student_attendance", {
           _student_qr: studentQrCode,
@@ -267,8 +254,6 @@ export default function ClassroomLogin() {
         return;
       }
 
-      // Record attendance (recorded_by is null for classroom device)
-      // Record attendance using the secure RPC (bypasses RLS)
       const { error: insertError } = await supabase
         .rpc("record_classroom_attendance", {
           _student_id: validationResult.student_id!,
@@ -312,20 +297,17 @@ export default function ClassroomLogin() {
 
   if (!roomId) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/10 to-accent/10 p-4">
-        <Card className="max-w-md">
-          <CardHeader>
-            <CardTitle>Invalid Access</CardTitle>
-            <CardDescription>
-              This page requires a valid room parameter
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Button onClick={() => navigate("/attendance")} className="w-full">
-              Go to Attendance
-            </Button>
-          </CardContent>
-        </Card>
+      <div className="min-h-screen flex items-center justify-center bg-apple-gray-50 p-6">
+        <div className="bg-white rounded-apple-xl shadow-apple-card p-8 max-w-md w-full text-center">
+          <h2 className="text-xl font-semibold text-apple-gray-800 mb-2">Invalid Access</h2>
+          <p className="text-apple-gray-500 mb-6">This page requires a valid room parameter</p>
+          <Button
+            onClick={() => navigate("/attendance")}
+            className="w-full h-12 bg-apple-blue hover:bg-blue-600 text-white rounded-xl"
+          >
+            Go to Attendance
+          </Button>
+        </div>
       </div>
     );
   }
@@ -333,131 +315,144 @@ export default function ClassroomLogin() {
   // Show teacher login screen
   if (showLogin) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/10 to-accent/10 p-4">
-        <Card className="max-w-md w-full">
-          <CardHeader>
-            <CardTitle>Classroom Device Login</CardTitle>
-            <CardDescription>
-              {roomInfo?.name ? `Room: ${roomInfo.name}` : "Select teacher to continue"}
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <label htmlFor="teacher-select" className="text-sm font-medium">
-                Select Teacher
-              </label>
-              <select
-                id="teacher-select"
-                value={selectedTeacherId}
-                onChange={(e) => setSelectedTeacherId(e.target.value)}
-                className="w-full p-2 border rounded-md bg-background"
-              >
-                <option value="">-- Select a teacher --</option>
-                {teachers.map((teacher) => (
-                  <option key={teacher.id} value={teacher.id}>
-                    {teacher.full_name || teacher.teacher_code}
-                  </option>
-                ))}
-              </select>
+      <div className="min-h-screen flex items-center justify-center bg-apple-gray-50 p-6">
+        <div className="w-full max-w-md animate-fade-in-up">
+          {/* Header */}
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 to-purple-600 shadow-lg shadow-purple-500/25 mb-6">
+              <BookOpen className="w-8 h-8 text-white" />
             </div>
-            <Button onClick={handleTeacherLogin} className="w-full" disabled={!selectedTeacherId}>
-              Login to Classroom Device
-            </Button>
-            <Button variant="outline" onClick={() => navigate("/attendance")} className="w-full">
-              Cancel
-            </Button>
-          </CardContent>
-        </Card>
+            <h1 className="text-2xl font-semibold text-apple-gray-800">
+              Classroom Device
+            </h1>
+            <p className="mt-2 text-apple-gray-500">
+              {roomInfo?.name ? `Room: ${roomInfo.name}` : "Select teacher to continue"}
+            </p>
+          </div>
+
+          {/* Login Card */}
+          <div className="bg-white rounded-apple-xl shadow-apple-card p-8">
+            <div className="space-y-5">
+              <div className="space-y-2">
+                <label htmlFor="teacher-select" className="text-sm font-medium text-apple-gray-700">
+                  Select Teacher
+                </label>
+                <select
+                  id="teacher-select"
+                  value={selectedTeacherId}
+                  onChange={(e) => setSelectedTeacherId(e.target.value)}
+                  className="w-full h-12 px-4 border border-apple-gray-200 rounded-xl bg-white text-apple-gray-800 focus:border-apple-blue focus:ring-2 focus:ring-apple-blue/20 transition-all"
+                >
+                  <option value="">-- Select a teacher --</option>
+                  {teachers.map((teacher) => (
+                    <option key={teacher.id} value={teacher.id}>
+                      {teacher.full_name || teacher.teacher_code}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <Button
+                onClick={handleTeacherLogin}
+                className="w-full h-12 bg-purple-600 hover:bg-purple-700 text-white rounded-xl font-medium"
+                disabled={!selectedTeacherId}
+              >
+                Login to Classroom
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => navigate("/attendance")}
+                className="w-full h-12 rounded-xl border-apple-gray-200 text-apple-gray-600 hover:bg-apple-gray-50"
+              >
+                Cancel
+              </Button>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/10 to-accent/10 p-4">
+    <div className="min-h-screen bg-apple-gray-50 p-6">
       <div className="max-w-4xl mx-auto space-y-6">
         {/* Header */}
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
+        <div className="bg-white rounded-apple-xl shadow-apple-card p-6">
+          <div className="flex items-center justify-between">
             <div>
-              <CardTitle>Classroom Device</CardTitle>
-              <CardDescription>
+              <h1 className="text-xl font-semibold text-apple-gray-800">Classroom Device</h1>
+              <p className="text-sm text-apple-gray-500 mt-1">
                 {roomInfo?.name && teacherInfo?.full_name && (
-                  <>Room: {roomInfo.name} | Teacher: {teacherInfo.full_name}</>
+                  <>Room: {roomInfo.name} · Teacher: {teacherInfo.full_name}</>
                 )}
-              </CardDescription>
+              </p>
             </div>
-            <Button variant="outline" onClick={handleLogout} size="sm">
+            <Button
+              variant="outline"
+              onClick={handleLogout}
+              size="sm"
+              className="rounded-xl border-apple-gray-200 text-apple-gray-600 hover:bg-apple-gray-50"
+            >
               <LogOut className="mr-2 h-4 w-4" />
               Logout
             </Button>
-          </CardHeader>
-        </Card>
+          </div>
+        </div>
 
         {/* Today's Schedule */}
         {todaySchedule.length > 0 ? (
-          <Card>
-            <CardHeader>
-              <CardTitle>Today's Schedule</CardTitle>
-              <CardDescription>Select a period to start attendance</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid gap-3">
-                {todaySchedule.map((schedule) => (
-                  <Card
-                    key={schedule.id}
-                    className={`cursor-pointer transition-colors ${selectedSchedule?.id === schedule.id
-                      ? "border-primary bg-primary/5"
-                      : "hover:border-primary/50"
-                      }`}
-                    onClick={() => {
-                      setSelectedSchedule(schedule);
-                      setIsScanning(false);
-                    }}
-                  >
-                    <CardContent className="p-4">
-                      <div className="flex items-center justify-between">
-                        <div className="space-y-1">
-                          <div className="flex items-center gap-2">
-                            <Badge variant="outline">Period {schedule.period_number}</Badge>
-                            <span className="font-semibold">
-                              {schedule.class_name} - {schedule.subject}
-                            </span>
-                          </div>
-                          <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                            <span className="flex items-center gap-1">
-                              <Clock className="h-3 w-3" />
-                              {schedule.start_time === "00:00:00" && schedule.end_time === "23:59:59"
-                                ? "All Day"
-                                : `${schedule.start_time} - ${schedule.end_time}`}
-                            </span>
-                            <span className="flex items-center gap-1">
-                              <MapPin className="h-3 w-3" />
-                              {schedule.room_name}
-                            </span>
-                            <span className="flex items-center gap-1">
-                              <BookOpen className="h-3 w-3" />
-                              Grade {schedule.grade} - {schedule.section}
-                            </span>
-                          </div>
-                        </div>
-                        {selectedSchedule?.id === schedule.id && (
-                          <Badge>Selected</Badge>
-                        )}
+          <div className="bg-white rounded-apple-xl shadow-apple-card p-6">
+            <h2 className="text-lg font-semibold text-apple-gray-800 mb-4">Today's Schedule</h2>
+            <p className="text-sm text-apple-gray-500 mb-6">Select a period to start attendance</p>
+            <div className="space-y-3">
+              {todaySchedule.map((schedule) => (
+                <button
+                  key={schedule.id}
+                  onClick={() => {
+                    setSelectedSchedule(schedule);
+                    setIsScanning(false);
+                  }}
+                  className={`w-full text-left p-4 rounded-xl border-2 transition-all ${selectedSchedule?.id === schedule.id
+                      ? "border-purple-500 bg-purple-50"
+                      : "border-apple-gray-100 hover:border-apple-gray-200 hover:bg-apple-gray-50"
+                    }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <Badge variant="outline" className="bg-apple-gray-100 border-0 text-apple-gray-600">
+                          Period {schedule.period_number}
+                        </Badge>
+                        <span className="font-medium text-apple-gray-800">
+                          {schedule.class_name} - {schedule.subject}
+                        </span>
                       </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
+                      <div className="flex items-center gap-4 text-sm text-apple-gray-500">
+                        <span className="flex items-center gap-1">
+                          <Clock className="h-3.5 w-3.5" />
+                          {schedule.start_time === "00:00:00" && schedule.end_time === "23:59:59"
+                            ? "All Day"
+                            : `${schedule.start_time} - ${schedule.end_time}`}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <MapPin className="h-3.5 w-3.5" />
+                          {schedule.room_name}
+                        </span>
+                      </div>
+                    </div>
+                    {selectedSchedule?.id === schedule.id ? (
+                      <Badge className="bg-purple-500 hover:bg-purple-500">Selected</Badge>
+                    ) : (
+                      <ChevronRight className="h-5 w-5 text-apple-gray-300" />
+                    )}
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
         ) : (
-          <Card>
-            <CardContent className="pt-6">
-              <p className="text-center text-muted-foreground">
-                No classes scheduled for today
-              </p>
-            </CardContent>
-          </Card>
+          <div className="bg-white rounded-apple-xl shadow-apple-card p-8 text-center">
+            <p className="text-apple-gray-500">No classes scheduled for today</p>
+          </div>
         )}
 
         {/* QR Scanner */}
@@ -467,7 +462,7 @@ export default function ClassroomLogin() {
               <Button
                 onClick={() => setIsScanning(true)}
                 size="lg"
-                className="w-full"
+                className="w-full h-14 bg-purple-600 hover:bg-purple-700 text-white rounded-xl font-medium text-base"
               >
                 Start Attendance for Period {selectedSchedule.period_number}
               </Button>
@@ -477,7 +472,7 @@ export default function ClassroomLogin() {
                 <Button
                   onClick={() => setIsScanning(false)}
                   variant="outline"
-                  className="w-full"
+                  className="w-full h-12 rounded-xl border-apple-gray-200"
                 >
                   Stop Scanning
                 </Button>

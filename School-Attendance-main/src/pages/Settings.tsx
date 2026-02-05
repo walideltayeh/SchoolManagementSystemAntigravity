@@ -205,12 +205,12 @@ export default function Settings() {
       </div>
 
       <Tabs defaultValue="general" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="general">General</TabsTrigger>
-          <TabsTrigger value="database">Database</TabsTrigger>
-          <TabsTrigger value="notifications">Notifications</TabsTrigger>
-          <TabsTrigger value="security">Security</TabsTrigger>
-          <TabsTrigger value="dangerous">Dangerous Zone</TabsTrigger>
+        <TabsList className="flex flex-wrap h-auto bg-transparent p-0 gap-2 mb-8 justify-start">
+          <TabsTrigger value="general" className="rounded-full border border-apple-gray-200 bg-white data-[state=active]:bg-apple-gray-900 data-[state=active]:text-white transition-all hover:bg-apple-gray-50">General</TabsTrigger>
+          <TabsTrigger value="database" className="rounded-full border border-apple-gray-200 bg-white data-[state=active]:bg-apple-gray-900 data-[state=active]:text-white transition-all hover:bg-apple-gray-50">Database</TabsTrigger>
+          <TabsTrigger value="notifications" className="rounded-full border border-apple-gray-200 bg-white data-[state=active]:bg-apple-gray-900 data-[state=active]:text-white transition-all hover:bg-apple-gray-50">Notifications</TabsTrigger>
+          <TabsTrigger value="security" className="rounded-full border border-apple-gray-200 bg-white data-[state=active]:bg-apple-gray-900 data-[state=active]:text-white transition-all hover:bg-apple-gray-50">Security</TabsTrigger>
+          <TabsTrigger value="dangerous" className="rounded-full border border-red-200 bg-red-50 text-red-600 data-[state=active]:bg-red-600 data-[state=active]:text-white hover:bg-red-100">Dangerous Zone</TabsTrigger>
         </TabsList>
 
         <TabsContent value="general" className="space-y-4">
@@ -229,7 +229,7 @@ export default function Settings() {
               <div className="space-y-4">
                 <Label>School Logo</Label>
                 <div className="flex items-start gap-4">
-                  <div className="w-32 h-32 border-2 border-dashed rounded-lg flex items-center justify-center bg-muted overflow-hidden">
+                  <div className="w-32 h-32 border-2 border-dashed border-apple-gray-200 rounded-2xl flex items-center justify-center bg-apple-gray-50 overflow-hidden">
                     {formData.logo ? (
                       <img
                         src={formData.logo}
@@ -384,9 +384,9 @@ export default function Settings() {
                 />
               </div>
 
-              <div className="rounded-md bg-muted p-4">
+              <div className="rounded-xl bg-apple-gray-50 p-6 border border-apple-gray-100">
                 <div className="flex items-center gap-2">
-                  <Server className="h-5 w-5 text-school-primary" />
+                  <Server className="h-5 w-5 text-apple-blue" />
                   <div className="font-medium">Database Status</div>
                 </div>
                 <div className="mt-2 text-sm text-muted-foreground">
@@ -426,9 +426,9 @@ export default function Settings() {
                 <Label htmlFor="send-notifications">Enable Parent Notifications</Label>
               </div>
 
-              <div className="rounded-md bg-muted p-4 mt-4">
+              <div className="rounded-xl bg-apple-gray-50 p-6 border border-apple-gray-100 mt-6">
                 <div className="flex items-center gap-2">
-                  <Bell className="h-5 w-5 text-school-primary" />
+                  <Bell className="h-5 w-5 text-apple-blue" />
                   <div className="font-medium">Notification Services</div>
                 </div>
                 <div className="mt-2 text-sm text-muted-foreground">
@@ -448,9 +448,9 @@ export default function Settings() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="rounded-md bg-muted p-4">
+              <div className="rounded-xl bg-apple-gray-50 p-6 border border-apple-gray-100">
                 <div className="flex items-center gap-2">
-                  <Shield className="h-5 w-5 text-school-primary" />
+                  <Shield className="h-5 w-5 text-apple-blue" />
                   <div className="font-medium">Data Protection</div>
                 </div>
                 <div className="mt-2 text-sm text-muted-foreground">

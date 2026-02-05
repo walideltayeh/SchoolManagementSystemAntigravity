@@ -8,18 +8,28 @@ interface DashboardHeaderProps {
 }
 
 export function DashboardHeader({ onConfigChange }: DashboardHeaderProps) {
+  const today = new Date();
+  const dateString = today.toLocaleDateString('en-US', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+
   return (
     <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
       <div>
-        <h2 className="text-2xl font-bold tracking-tight">Dashboard</h2>
-        <p className="text-muted-foreground">
-          Welcome to the School Scan Connect Dashboard.
+        <h1 className="text-3xl font-semibold text-apple-gray-800 tracking-tight">
+          Dashboard
+        </h1>
+        <p className="text-apple-gray-500 mt-1">
+          {dateString}
         </p>
       </div>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-3">
         <DashboardConfigComponent onConfigChange={onConfigChange} />
         <Link to="/attendance">
-          <Button className="bg-school-primary hover:bg-school-secondary">
+          <Button className="bg-apple-blue hover:bg-blue-600 text-white rounded-xl px-5 h-11 font-medium shadow-sm transition-all hover:shadow-md">
             <QrCode className="mr-2 h-4 w-4" />
             Scan Attendance
           </Button>

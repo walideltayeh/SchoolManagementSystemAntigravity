@@ -1,15 +1,15 @@
 
-import { Bell, Menu, Search } from "lucide-react";
+import { Bell, Menu, Search, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { 
-  DropdownMenu, 
-  DropdownMenuContent, 
-  DropdownMenuItem, 
-  DropdownMenuLabel, 
-  DropdownMenuSeparator, 
-  DropdownMenuTrigger 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 import { Link } from "react-router-dom";
 import { getSchoolConfig } from "@/config/school";
@@ -21,16 +21,16 @@ interface HeaderProps {
 
 export function Header({ toggleSidebar }: HeaderProps) {
   const [schoolName, setSchoolName] = useState(() => getSchoolConfig().name);
-  
+
   useEffect(() => {
     const handleStorageChange = () => {
       setSchoolName(getSchoolConfig().name);
     };
-    
+
     window.addEventListener('storage', handleStorageChange);
     return () => window.removeEventListener('storage', handleStorageChange);
   }, []);
-  
+
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
       <Button variant="outline" size="icon" onClick={toggleSidebar} className="shrink-0 md:hidden">
@@ -40,6 +40,13 @@ export function Header({ toggleSidebar }: HeaderProps) {
       <Link to="/" className="flex items-center gap-2 shrink-0">
         <span className="font-bold text-xl text-school-primary">{schoolName}</span>
       </Link>
+
+      <Button variant="ghost" size="icon" asChild className="shrink-0 text-muted-foreground hover:text-foreground" title="Back to Home">
+        <Link to="/">
+          <Home className="h-5 w-5" />
+          <span className="sr-only">Back to Home</span>
+        </Link>
+      </Button>
       <div className="w-full flex-1 md:grow-0 md:w-[240px]">
         <form>
           <div className="relative">

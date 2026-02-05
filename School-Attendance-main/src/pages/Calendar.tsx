@@ -171,21 +171,22 @@ export default function CalendarPage() {
   };
 
   // Subject color mapping
+  // Apple-inspired calendar colors
   const subjectColors: Record<string, string> = {
-    "Mathematics": "bg-blue-100 border-blue-300 dark:bg-blue-900/30 dark:border-blue-700",
-    "Math": "bg-blue-100 border-blue-300 dark:bg-blue-900/30 dark:border-blue-700",
-    "Science": "bg-green-100 border-green-300 dark:bg-green-900/30 dark:border-green-700",
-    "Biology": "bg-green-100 border-green-300 dark:bg-green-900/30 dark:border-green-700",
-    "PE": "bg-orange-100 border-orange-300 dark:bg-orange-900/30 dark:border-orange-700",
-    "Physical Education": "bg-orange-100 border-orange-300 dark:bg-orange-900/30 dark:border-orange-700",
-    "English": "bg-purple-100 border-purple-300 dark:bg-purple-900/30 dark:border-purple-700",
-    "Arabic": "bg-amber-100 border-amber-300 dark:bg-amber-900/30 dark:border-amber-700",
-    "Islamic Studies": "bg-teal-100 border-teal-300 dark:bg-teal-900/30 dark:border-teal-700",
-    "Art": "bg-pink-100 border-pink-300 dark:bg-pink-900/30 dark:border-pink-700",
-    "Music": "bg-indigo-100 border-indigo-300 dark:bg-indigo-900/30 dark:border-indigo-700",
-    "Computer Science": "bg-cyan-100 border-cyan-300 dark:bg-cyan-900/30 dark:border-cyan-700",
-    "Social Studies": "bg-yellow-100 border-yellow-300 dark:bg-yellow-900/30 dark:border-yellow-700",
-    "All": "bg-slate-100 border-slate-300 dark:bg-slate-900/30 dark:border-slate-700",
+    "Mathematics": "bg-blue-50 border-blue-200 text-blue-700",
+    "Math": "bg-blue-50 border-blue-200 text-blue-700",
+    "Science": "bg-green-50 border-green-200 text-green-700",
+    "Biology": "bg-green-50 border-green-200 text-green-700",
+    "PE": "bg-orange-50 border-orange-200 text-orange-700",
+    "Physical Education": "bg-orange-50 border-orange-200 text-orange-700",
+    "English": "bg-purple-50 border-purple-200 text-purple-700",
+    "Arabic": "bg-amber-50 border-amber-200 text-amber-700",
+    "Islamic Studies": "bg-teal-50 border-teal-200 text-teal-700",
+    "Art": "bg-pink-50 border-pink-200 text-pink-700",
+    "Music": "bg-indigo-50 border-indigo-200 text-indigo-700",
+    "Computer Science": "bg-cyan-50 border-cyan-200 text-cyan-700",
+    "Social Studies": "bg-yellow-50 border-yellow-200 text-yellow-700",
+    "All": "bg-slate-50 border-slate-200 text-slate-700",
   };
 
   const getSubjectColor = (className: string) => {
@@ -256,10 +257,10 @@ export default function CalendarPage() {
 
             <div className="mt-4">
               <Tabs defaultValue="day" onValueChange={(v) => setView(v as "day" | "week" | "month")}>
-                <TabsList className="grid w-full grid-cols-3">
-                  <TabsTrigger value="day">Day</TabsTrigger>
-                  <TabsTrigger value="week">Week</TabsTrigger>
-                  <TabsTrigger value="month">Month</TabsTrigger>
+                <TabsList className="flex items-center gap-1 p-1 bg-apple-gray-100/50 rounded-full w-auto inline-flex">
+                  <TabsTrigger value="day" className="rounded-full px-4 py-1.5 data-[state=active]:bg-white data-[state=active]:shadow-sm">Day</TabsTrigger>
+                  <TabsTrigger value="week" className="rounded-full px-4 py-1.5 data-[state=active]:bg-white data-[state=active]:shadow-sm">Week</TabsTrigger>
+                  <TabsTrigger value="month" className="rounded-full px-4 py-1.5 data-[state=active]:bg-white data-[state=active]:shadow-sm">Month</TabsTrigger>
                 </TabsList>
               </Tabs>
             </div>
@@ -286,9 +287,9 @@ export default function CalendarPage() {
                 <table className="w-full border-collapse">
                   <thead>
                     <tr>
-                      <th className="border p-2 bg-muted font-semibold text-left min-w-[100px]">Period</th>
+                      <th className="border p-3 bg-apple-gray-50/80 backdrop-blur font-medium text-left min-w-[100px] text-apple-gray-500">Period</th>
                       {days.map(day => (
-                        <th key={day} className="border p-2 bg-muted font-semibold text-center min-w-[150px]">
+                        <th key={day} className="border p-3 bg-apple-gray-50/80 backdrop-blur font-medium text-center min-w-[150px] text-apple-gray-500">
                           {day}
                         </th>
                       ))}

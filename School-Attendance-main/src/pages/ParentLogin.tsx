@@ -1,12 +1,11 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { User, Mail } from "lucide-react";
+import { Mail, Phone, ArrowLeft } from "lucide-react";
 
 export default function ParentLogin() {
   const navigate = useNavigate();
@@ -17,7 +16,7 @@ export default function ParentLogin() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (useEmail && !email) {
       toast({
         title: "Error",
@@ -97,32 +96,43 @@ export default function ParentLogin() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-muted/20 flex items-center justify-center p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="space-y-2 text-center">
-          <div className="flex justify-center mb-4">
-            <div className="bg-primary/10 p-3 rounded-full">
-              <User className="h-6 w-6 text-primary" />
-            </div>
-          </div>
-          <CardTitle className="text-2xl">Parent Portal</CardTitle>
-          <CardDescription>
-            Sign in to view your child's information
-          </CardDescription>
-        </CardHeader>
+    <div className="min-h-screen flex items-center justify-center bg-apple-gray-50 p-6">
+      {/* Back Button */}
+      <Link
+        to="/"
+        className="fixed top-6 left-6 flex items-center gap-2 text-apple-gray-500 hover:text-apple-gray-800 transition-colors"
+      >
+        <ArrowLeft className="w-5 h-5" />
+        <span className="text-sm font-medium">Back</span>
+      </Link>
 
-        <CardContent>
-          <form onSubmit={handleLogin} className="space-y-4">
+      {/* Login Card */}
+      <div className="w-full max-w-md animate-fade-in-up">
+        {/* Logo/Header */}
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-green-500 to-green-600 shadow-lg shadow-green-500/25 mb-6">
+            <span className="text-white font-bold text-2xl">P</span>
+          </div>
+          <h1 className="text-2xl font-semibold text-apple-gray-800">
+            Parent Portal
+          </h1>
+          <p className="mt-2 text-apple-gray-500">
+            Sign in to view your child's information
+          </p>
+        </div>
+
+        {/* Login Form Card */}
+        <div className="bg-white rounded-apple-xl shadow-apple-card p-8">
+          <form onSubmit={handleLogin} className="space-y-6">
             {/* Toggle between email and phone */}
-            <div className="flex gap-2 bg-muted p-1 rounded-lg">
+            <div className="flex gap-2 bg-apple-gray-100 p-1 rounded-xl">
               <button
                 type="button"
                 onClick={() => setUseEmail(true)}
-                className={`flex-1 py-2 px-3 rounded text-sm font-medium transition-colors ${
-                  useEmail
-                    ? 'bg-background text-foreground'
-                    : 'text-muted-foreground'
-                }`}
+                className={`flex-1 py-2.5 px-4 rounded-lg text-sm font-medium transition-all ${useEmail
+                    ? 'bg-white text-apple-gray-800 shadow-sm'
+                    : 'text-apple-gray-500 hover:text-apple-gray-700'
+                  }`}
               >
                 <Mail className="h-4 w-4 inline mr-2" />
                 Email
@@ -130,13 +140,12 @@ export default function ParentLogin() {
               <button
                 type="button"
                 onClick={() => setUseEmail(false)}
-                className={`flex-1 py-2 px-3 rounded text-sm font-medium transition-colors ${
-                  !useEmail
-                    ? 'bg-background text-foreground'
-                    : 'text-muted-foreground'
-                }`}
+                className={`flex-1 py-2.5 px-4 rounded-lg text-sm font-medium transition-all ${!useEmail
+                    ? 'bg-white text-apple-gray-800 shadow-sm'
+                    : 'text-apple-gray-500 hover:text-apple-gray-700'
+                  }`}
               >
-                <User className="h-4 w-4 inline mr-2" />
+                <Phone className="h-4 w-4 inline mr-2" />
                 Phone
               </button>
             </div>
@@ -144,7 +153,9 @@ export default function ParentLogin() {
             {/* Email Input */}
             {useEmail && (
               <div className="space-y-2">
-                <Label htmlFor="email">Email Address</Label>
+                <Label htmlFor="email" className="text-apple-gray-700 font-medium text-sm">
+                  Email Address
+                </Label>
                 <Input
                   id="email"
                   type="email"
@@ -153,8 +164,9 @@ export default function ParentLogin() {
                   onChange={(e) => setEmail(e.target.value)}
                   disabled={loading}
                   autoFocus
+                  className="h-12 rounded-xl border-apple-gray-200 focus:border-apple-blue focus:ring-apple-blue/20"
                 />
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-apple-gray-400">
                   Use the email you provided during student registration
                 </p>
               </div>
@@ -163,7 +175,9 @@ export default function ParentLogin() {
             {/* Phone Input */}
             {!useEmail && (
               <div className="space-y-2">
-                <Label htmlFor="phone">Phone Number</Label>
+                <Label htmlFor="phone" className="text-apple-gray-700 font-medium text-sm">
+                  Phone Number
+                </Label>
                 <Input
                   id="phone"
                   type="tel"
@@ -172,30 +186,36 @@ export default function ParentLogin() {
                   onChange={(e) => setPhone(e.target.value)}
                   disabled={loading}
                   autoFocus
+                  className="h-12 rounded-xl border-apple-gray-200 focus:border-apple-blue focus:ring-apple-blue/20"
                 />
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-apple-gray-400">
                   Use the phone number you provided during student registration
                 </p>
               </div>
             )}
 
-            <Button 
-              type="submit" 
-              className="w-full" 
+            <Button
+              type="submit"
+              className="w-full h-12 bg-apple-green hover:bg-green-600 text-white rounded-xl font-medium text-base transition-all hover:shadow-lg hover:shadow-green-500/25"
               disabled={loading}
             >
               {loading ? "Signing in..." : "Sign In"}
             </Button>
 
-            <div className="text-center text-sm text-muted-foreground">
+            <div className="text-center text-sm text-apple-gray-500 pt-2">
               <p>Don't have an account?</p>
               <p className="mt-1">
                 Register your child to create a parent account
               </p>
             </div>
           </form>
-        </CardContent>
-      </Card>
+        </div>
+
+        {/* Footer */}
+        <p className="text-center text-sm text-apple-gray-400 mt-6">
+          Your child's attendance at your fingertips
+        </p>
+      </div>
     </div>
   );
 }

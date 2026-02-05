@@ -1072,7 +1072,7 @@ const Admin = () => {
   };
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="max-w-7xl mx-auto space-y-8">
       <h1 className="text-2xl font-bold mb-6">Admin Dashboard</h1>
 
       <div className="mb-4 flex flex-wrap gap-2">
@@ -1109,17 +1109,17 @@ const Admin = () => {
         }}
         className="w-full"
       >
-        <TabsList className="grid w-full grid-cols-7 mb-6">
-          <TabsTrigger value="rooms">Rooms</TabsTrigger>
-          <TabsTrigger value="periods">Periods</TabsTrigger>
-          <TabsTrigger value="classes">
+        <TabsList className="flex flex-wrap h-auto bg-transparent p-0 gap-2 mb-8 justify-start">
+          <TabsTrigger value="rooms" className="data-[state=active]:bg-apple-blue data-[state=active]:text-white bg-white border border-apple-gray-200">Rooms</TabsTrigger>
+          <TabsTrigger value="periods" className="data-[state=active]:bg-apple-blue data-[state=active]:text-white bg-white border border-apple-gray-200">Periods</TabsTrigger>
+          <TabsTrigger value="classes" className="data-[state=active]:bg-apple-blue data-[state=active]:text-white bg-white border border-apple-gray-200">
             <BookOpen className="h-4 w-4 mr-2" />
             Manage Classes
           </TabsTrigger>
-          <TabsTrigger value="teachers">Manage Teachers</TabsTrigger>
-          <TabsTrigger value="buses">Bus Routes</TabsTrigger>
-          <TabsTrigger value="calendar">Calendar</TabsTrigger>
-          <TabsTrigger value="qrcodes">QR Codes</TabsTrigger>
+          <TabsTrigger value="teachers" className="data-[state=active]:bg-apple-blue data-[state=active]:text-white bg-white border border-apple-gray-200">Manage Teachers</TabsTrigger>
+          <TabsTrigger value="buses" className="data-[state=active]:bg-apple-blue data-[state=active]:text-white bg-white border border-apple-gray-200">Bus Routes</TabsTrigger>
+          <TabsTrigger value="calendar" className="data-[state=active]:bg-apple-blue data-[state=active]:text-white bg-white border border-apple-gray-200">Calendar</TabsTrigger>
+          <TabsTrigger value="qrcodes" className="data-[state=active]:bg-apple-blue data-[state=active]:text-white bg-white border border-apple-gray-200">QR Codes</TabsTrigger>
         </TabsList>
 
         <TabsContent value="rooms">
@@ -1133,7 +1133,7 @@ const Admin = () => {
 
         <TabsContent value="periods">
           <Card>
-            <CardHeader className="border-b bg-muted/50">
+            <CardHeader className="">
               <CardTitle className="text-2xl font-bold text-primary">Class Period Times</CardTitle>
               <CardDescription>
                 Configure the start and end times for each class period
@@ -1153,7 +1153,7 @@ const Admin = () => {
           </div>
 
           <Card className="mt-6">
-            <CardHeader className="border-b bg-muted/50">
+            <CardHeader className="">
               <CardTitle className="text-2xl font-bold text-primary">Add New Class</CardTitle>
               <CardDescription>
                 Create classes by selecting grade, section, and subjects
@@ -1170,7 +1170,7 @@ const Admin = () => {
 
           {classes.length > 0 && (
             <Card className="mt-6">
-              <CardHeader className="border-b bg-muted/50">
+              <CardHeader className="">
                 <div className="flex items-center justify-between">
                   <div>
                     <CardTitle className="text-2xl font-bold text-primary">Class List</CardTitle>
@@ -1283,7 +1283,7 @@ const Admin = () => {
 
         <TabsContent value="teachers">
           <Card>
-            <CardHeader className="border-b bg-muted/50">
+            <CardHeader className="">
               <CardTitle className="text-2xl font-bold text-primary">Add New Teacher</CardTitle>
               <CardDescription>
                 Enter teacher details to add them to the system.
@@ -1296,7 +1296,7 @@ const Admin = () => {
 
           {teachers.length > 0 && (
             <Card className="mt-6">
-              <CardHeader className="border-b bg-muted/50">
+              <CardHeader className="">
                 <CardTitle className="text-2xl font-bold text-primary">Teacher List</CardTitle>
                 <CardDescription>
                   Edit or manage existing teachers
@@ -1326,7 +1326,7 @@ const Admin = () => {
 
         <TabsContent value="buses">
           <Card>
-            <CardHeader className="border-b bg-muted/50">
+            <CardHeader className="">
               <CardTitle className="text-2xl font-bold text-primary">Add New Bus Route</CardTitle>
               <CardDescription>
                 Configure a new bus route for student transportation.
@@ -1338,7 +1338,7 @@ const Admin = () => {
           </Card>
 
           <Card className="mt-6">
-            <CardHeader className="border-b bg-muted/50">
+            <CardHeader className="">
               <CardTitle className="text-2xl font-bold text-primary">Add Bus Stop</CardTitle>
               <CardDescription>
                 Add stops to existing bus routes with pickup/dropoff locations and times.
@@ -1351,7 +1351,7 @@ const Admin = () => {
 
           {busRoutes.length > 0 && (
             <Card className="mt-6">
-              <CardHeader className="border-b bg-muted/50">
+              <CardHeader className="">
                 <CardTitle className="text-2xl font-bold text-primary">Bus Routes Summary</CardTitle>
                 <CardDescription>
                   View all created bus routes and their details
@@ -1406,7 +1406,7 @@ const Admin = () => {
 
         <TabsContent value="calendar">
           <Card>
-            <CardHeader className="border-b bg-muted/50">
+            <CardHeader className="">
               <CardTitle className="text-2xl font-bold text-primary">Class Scheduling</CardTitle>
               <CardDescription>
                 Create and manage the school timetable
@@ -1429,7 +1429,7 @@ const Admin = () => {
 
           {schedules.length > 0 && (
             <Card className="mt-6">
-              <CardHeader className="border-b bg-muted/50">
+              <CardHeader className="">
                 <CardTitle className="text-2xl font-bold text-primary">Current Schedules</CardTitle>
                 <CardDescription>
                   View and manage classroom assignments
@@ -1517,7 +1517,7 @@ const Admin = () => {
             <BulkQRGenerator />
 
             <Card>
-              <CardHeader className="border-b bg-muted/50">
+              <CardHeader className="">
                 <CardTitle className="text-2xl font-bold text-primary">Class Schedule QR Codes</CardTitle>
                 <CardDescription>
                   Print or download QR codes for class schedule scanning

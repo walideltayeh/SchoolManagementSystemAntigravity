@@ -1,6 +1,5 @@
-import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { ChevronRight, Globe, ShieldCheck, Smartphone, Zap } from "lucide-react";
+import { QrCode, ShieldCheck, Zap, BarChart3, Users, Smartphone, Bell, CheckCircle2, Clock, Globe, ArrowUpRight } from "lucide-react";
 import {
     Dialog,
     DialogContent,
@@ -11,49 +10,100 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
+import { useSchoolConfig } from "@/hooks/useSchoolConfig";
+import { LiquidGlassButton } from "@/components/ui/LiquidGlassButton";
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+import { CountUp } from "@/components/CountUp";
+import { cn } from "@/lib/utils";
 
-const SLIDES = [
+// Animated Section Wrapper
+function AnimatedSection({ children, className, delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
+    const { ref, isVisible } = useScrollAnimation();
+    return (
+        <section
+            ref={ref}
+            className={cn(
+                "transition-all duration-700 ease-out",
+                isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12",
+                className
+            )}
+            style={{ transitionDelay: `${delay}ms` }}
+        >
+            {children}
+        </section>
+    );
+}
+
+// Animated Item for staggered animations
+function AnimatedItem({ children, className, delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
+    const { ref, isVisible } = useScrollAnimation();
+    return (
+        <div
+            ref={ref}
+            className={cn(
+                "transition-all duration-500 ease-out",
+                isVisible ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-8 scale-95",
+                className
+            )}
+            style={{ transitionDelay: `${delay}ms` }}
+        >
+            {children}
+        </div>
+    );
+}
+
+const FEATURES = [
     {
-        id: "scan",
-        title: "Seamless Entry",
-        subtitle: "Students simply scan their unique QR code. Our advanced technology marks attendance instantly—secure, fast, and reliable.",
-        gradient: "from-blue-400 via-purple-400 to-pink-400",
-        icon: Zap,
-        image: "/device_scanning.png",
-        imageAlt: "Student scanning QR code on tablet"
+        icon: QrCode,
+        title: "Instant QR Scanning",
+        description: "Students scan their unique QR code in under a second. No cards, no queues.",
     },
     {
-        id: "process",
-        title: "Real-time Sync",
-        subtitle: "The moment attendance is marked, data syncs securely. Parents receive instant notifications via the mobile app.",
-        gradient: "from-green-400 via-emerald-400 to-teal-400",
+        icon: Bell,
+        title: "Real-time Parent Alerts",
+        description: "Parents receive instant notifications when their child checks in or out.",
+    },
+    {
+        icon: BarChart3,
+        title: "Powerful Analytics",
+        description: "Comprehensive dashboards to track attendance patterns and trends.",
+    },
+    {
+        icon: ShieldCheck,
+        title: "Enterprise Security",
+        description: "Bank-grade encryption and full data privacy compliance.",
+    },
+    {
         icon: Smartphone,
-        image: "/process_flow.png",
-        imageAlt: "Process flow showing notification system"
+        title: "Works Everywhere",
+        description: "Access from any device. No app installation needed.",
     },
     {
-        id: "global",
-        title: "Global Citizens",
-        subtitle: "Nurturing inquiring, knowledgeable and caring young people for a better world through our IB curriculum.",
-        gradient: "from-orange-400 via-amber-400 to-yellow-400",
-        icon: Globe,
-        image: null, // Abstract fallback
-        imageAlt: "Global connections"
-    }
+        icon: Users,
+        title: "Easy Management",
+        description: "Manage students, teachers, and classes from one platform.",
+    },
+];
+
+const STATS = [
+    { value: 50, suffix: "+", label: "Schools" },
+    { value: 25, suffix: "K+", label: "Students" },
+    { value: 99.9, suffix: "%", label: "Uptime" },
+    { value: 1, prefix: "<", suffix: "s", label: "Scan Time" },
+];
+
+const STEPS = [
+    { icon: QrCode, title: "Scan", description: "Student scans their unique QR code at the entrance.", number: "01" },
+    { icon: CheckCircle2, title: "Record", description: "Attendance is instantly recorded with timestamp.", number: "02" },
+    { icon: Bell, title: "Notify", description: "Parents receive real-time alerts on their phone.", number: "03" },
+    { icon: BarChart3, title: "Analyze", description: "Admins view detailed reports and analytics.", number: "04" },
 ];
 
 export default function Landing() {
+    const { schoolInfo } = useSchoolConfig();
     const [demoOpen, setDemoOpen] = useState(false);
-    const [currentSlide, setCurrentSlide] = useState(0);
-
-    useEffect(() => {
-        const timer = setInterval(() => {
-            setCurrentSlide((prev) => (prev + 1) % SLIDES.length);
-        }, 6000); // 6 seconds for better reading time
-        return () => clearInterval(timer);
-    }, []);
 
     const handleDemoSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -62,156 +112,295 @@ export default function Landing() {
     };
 
     return (
-        <div className="h-screen w-screen bg-zinc-950 text-white overflow-hidden flex font-sans selection:bg-purple-500/30">
-            {/* LEFT COLUMN: Content */}
-            <div className="w-full lg:w-1/2 h-full flex flex-col relative z-20 bg-zinc-950/80 backdrop-blur-md lg:bg-zinc-950">
-                {/* Navigation */}
-                <nav className="p-6 md:p-10 flex items-center justify-between">
-                    <div className="flex items-center gap-3 group cursor-pointer">
-                        <div className="w-10 h-10 bg-gradient-to-tr from-blue-600 to-purple-600 rounded-xl flex items-center justify-center transform group-hover:rotate-12 transition-transform duration-300 shadow-lg shadow-purple-900/20">
-                            <span className="font-bold text-xl text-white">T</span>
-                        </div>
-                        <span className="font-bold text-xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400 group-hover:to-white transition-all">Test School</span>
-                    </div>
+        <div className="min-h-screen w-full bg-black text-white font-sans antialiased overflow-x-hidden">
 
-                    <div className="hidden sm:flex items-center gap-4">
-                        <Link to="/auth" className="text-sm font-medium text-gray-400 hover:text-white transition-colors">Staff Login</Link>
+            {/* Pure black background with subtle grid */}
+            <div className="fixed inset-0 pointer-events-none overflow-hidden">
+                <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.015)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.015)_1px,transparent_1px)] bg-[size:64px_64px]" />
+            </div>
+
+            {/* Navbar */}
+            <nav className="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur-xl border-b border-white/5">
+                <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                        <span className="font-bold text-xl tracking-tight text-white">{schoolInfo.name}</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                        <Link to="/auth">
+                            <LiquidGlassButton variant="secondary" className="h-10 px-6 text-sm">
+                                Admin
+                            </LiquidGlassButton>
+                        </Link>
                         <Link to="/parent-login">
-                            <Button variant="outline" className="rounded-full border-white/10 hover:bg-white/10 hover:text-white transition-all">
+                            <LiquidGlassButton variant="primary" className="h-10 px-6 text-sm">
                                 Parent Portal
-                            </Button>
+                            </LiquidGlassButton>
                         </Link>
                     </div>
-                </nav>
+                </div>
+            </nav>
 
-                {/* Content Area */}
-                <div className="flex-1 flex flex-col justify-center px-6 md:px-12 lg:px-20 relative">
-                    {SLIDES.map((slide, index) => (
-                        <div
-                            key={slide.id}
-                            className={`absolute inset-0 flex flex-col justify-center px-6 md:px-12 lg:px-20 transition-all duration-1000 ease-in-out ${index === currentSlide
-                                    ? "opacity-100 translate-x-0 pointer-events-auto"
-                                    : "opacity-0 -translate-x-8 pointer-events-none"
-                                }`}
-                        >
-                            <div className="flex items-center gap-3 mb-6">
-                                <div className={`p-3 rounded-lg bg-gradient-to-br ${slide.gradient} bg-opacity-10 opacity-80`}>
-                                    <slide.icon className="w-6 h-6 text-white" />
+            {/* Hero Section */}
+            <section className="relative pt-36 pb-24 md:pt-48 md:pb-32 flex flex-col items-center justify-center text-center px-6">
+                <div className="animate-fade-in-up">
+                    <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-red-500/10 border border-red-500/20 text-sm text-gray-300 mb-8 backdrop-blur-sm">
+                        <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+                        <span>Now with AI-powered insights</span>
+                        <ArrowUpRight className="w-4 h-4" />
+                    </div>
+
+                    <h1 className="text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold tracking-tight leading-[1.1] max-w-5xl">
+                        School Attendance
+                        <br />
+                        <span className="text-red-500">
+                            Reinvented.
+                        </span>
+                    </h1>
+
+                    <p className="mt-8 text-lg md:text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed">
+                        The modern way to track attendance. Seamless QR check-ins, instant parent alerts, and powerful analytics — all in one platform.
+                    </p>
+                </div>
+
+                <div className="mt-12 flex flex-col sm:flex-row items-center gap-4 animate-fade-in-up animation-delay-200">
+                    <Dialog open={demoOpen} onOpenChange={setDemoOpen}>
+                        <DialogTrigger asChild>
+                            <LiquidGlassButton variant="primary" size="lg">
+                                Book a Demo
+                            </LiquidGlassButton>
+                        </DialogTrigger>
+                        <DialogContent className="sm:max-w-md bg-black border border-white/10 shadow-2xl rounded-2xl p-6">
+                            <DialogHeader>
+                                <DialogTitle className="text-xl font-semibold text-white">Book a Demo</DialogTitle>
+                                <DialogDescription className="text-gray-400">
+                                    Schedule a personalized tour.
+                                </DialogDescription>
+                            </DialogHeader>
+                            <form onSubmit={handleDemoSubmit} className="space-y-4 mt-4">
+                                <div className="space-y-1.5">
+                                    <Label className="text-gray-300 font-medium text-sm">Email</Label>
+                                    <Input type="email" placeholder="principal@school.edu" required className="h-11 rounded-lg bg-white/5 border-white/10 text-white placeholder:text-gray-500" />
                                 </div>
-                                <span className="text-sm font-medium uppercase tracking-wider text-gray-500">Feature Highlight</span>
-                            </div>
+                                <div className="space-y-1.5">
+                                    <Label className="text-gray-300 font-medium text-sm">School Name</Label>
+                                    <Input placeholder="Greenwood High" required className="h-11 rounded-lg bg-white/5 border-white/10 text-white placeholder:text-gray-500" />
+                                </div>
+                                <div className="flex justify-end gap-3 pt-2">
+                                    <LiquidGlassButton type="button" variant="secondary" onClick={() => setDemoOpen(false)} className="h-10 px-5">Cancel</LiquidGlassButton>
+                                    <LiquidGlassButton type="submit" variant="primary" className="h-10 px-5">Submit</LiquidGlassButton>
+                                </div>
+                            </form>
+                        </DialogContent>
+                    </Dialog>
 
-                            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6 leading-[1.1]">
-                                <span className={`bg-gradient-to-r ${slide.gradient} bg-clip-text text-transparent`}>
-                                    {slide.title}
-                                </span>
-                            </h1>
+                    <Link to="/parent-login">
+                        <LiquidGlassButton variant="secondary" size="lg">
+                            Try Parent Portal
+                        </LiquidGlassButton>
+                    </Link>
+                </div>
 
-                            <p className="text-xl text-gray-400 max-w-lg mb-10 leading-relaxed">
-                                {slide.subtitle}
-                            </p>
-
-                            <div className="flex flex-col sm:flex-row gap-4">
-                                <Link to="/parent-login">
-                                    <Button size="lg" className="h-14 px-8 text-lg rounded-full bg-white text-black hover:bg-gray-200 transition-all w-full sm:w-auto">
-                                        Parent Portal <ChevronRight className="ml-2 w-5 h-5" />
-                                    </Button>
-                                </Link>
-                                <Dialog open={demoOpen} onOpenChange={setDemoOpen}>
-                                    <DialogTrigger asChild>
-                                        <Button size="lg" variant="outline" className="h-14 px-8 text-lg rounded-full border-white/20 text-white hover:bg-white/10 hover:text-white transition-all w-full sm:w-auto">
-                                            Request Demo
-                                        </Button>
-                                    </DialogTrigger>
-                                    <DialogContent className="sm:max-w-md bg-zinc-950 border-white/10 text-white">
-                                        <DialogHeader>
-                                            <DialogTitle className="text-2xl">Request a Demo</DialogTitle>
-                                            <DialogDescription className="text-gray-400">
-                                                Enter your details below to schedule a personalized walkthrough.
-                                            </DialogDescription>
-                                        </DialogHeader>
-                                        <form onSubmit={handleDemoSubmit} className="space-y-6 mt-4">
-                                            <div className="space-y-2">
-                                                <Label htmlFor="email" className="text-gray-300">Email address</Label>
-                                                <Input id="email" type="email" placeholder="name@school.com" required className="bg-zinc-900 border-white/10 text-white focus:border-purple-500" />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <Label htmlFor="school" className="text-gray-300">School Name</Label>
-                                                <Input id="school" placeholder="International School..." required className="bg-zinc-900 border-white/10 text-white focus:border-purple-500" />
-                                            </div>
-                                            <div className="flex justify-end gap-3 pt-4">
-                                                <Button type="button" variant="ghost" onClick={() => setDemoOpen(false)} className="text-gray-400 hover:text-white hover:bg-white/10">
-                                                    Cancel
-                                                </Button>
-                                                <Button type="submit" className="bg-purple-600 hover:bg-purple-500 text-white">
-                                                    Submit Request
-                                                </Button>
-                                            </div>
-                                        </form>
-                                    </DialogContent>
-                                </Dialog>
-                            </div>
+                {/* Floating badges */}
+                <div className="mt-16 flex flex-wrap justify-center gap-4 animate-fade-in-up animation-delay-300">
+                    {["Lightning Fast", "Secure", "Mobile Ready", "Cloud Based"].map((badge, i) => (
+                        <div key={i} className="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm text-gray-400 backdrop-blur-sm">
+                            {badge}
                         </div>
                     ))}
                 </div>
+            </section>
 
-                {/* Footer / Indicators */}
-                <div className="p-6 md:p-10 flex items-center justify-between mt-auto">
-                    <div className="flex gap-2">
-                        {SLIDES.map((_, i) => (
-                            <button
-                                key={i}
-                                onClick={() => setCurrentSlide(i)}
-                                className={`h-1.5 rounded-full transition-all duration-300 ${i === currentSlide ? "w-12 bg-white" : "w-4 bg-white/20 hover:bg-white/40"
-                                    }`}
-                                aria-label={`Go to slide ${i + 1}`}
-                            />
+            {/* Stats Section with Animated Counters */}
+            <AnimatedSection className="py-20 border-y border-white/5">
+                <div className="max-w-5xl mx-auto px-6">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+                        {STATS.map((stat, i) => (
+                            <div key={i} className="text-center p-6 rounded-2xl bg-white/[0.02] border border-white/5 hover:border-red-500/30 transition-colors">
+                                <div className="text-4xl md:text-5xl font-bold text-red-500">
+                                    <CountUp
+                                        end={stat.value}
+                                        prefix={stat.prefix || ""}
+                                        suffix={stat.suffix || ""}
+                                        duration={2000}
+                                    />
+                                </div>
+                                <div className="text-sm text-gray-500 mt-2 font-medium">{stat.label}</div>
+                            </div>
                         ))}
                     </div>
-                    <div className="text-xs text-gray-600 font-mono hidden md:block">
-                        TEST SCHOOL • SYSTEM V1.0
+                </div>
+            </AnimatedSection>
+
+            {/* How It Works Section */}
+            <section className="py-24 md:py-32 px-6">
+                <div className="max-w-5xl mx-auto">
+                    <AnimatedSection className="text-center mb-20">
+                        <span className="text-red-500 font-semibold text-sm uppercase tracking-wider">Process</span>
+                        <h2 className="text-4xl md:text-5xl font-bold text-white tracking-tight mt-4 mb-6">
+                            How It Works
+                        </h2>
+                        <p className="text-gray-400 max-w-lg mx-auto text-lg">
+                            A simple four-step process that takes less than a second.
+                        </p>
+                    </AnimatedSection>
+
+                    <div className="relative">
+                        {/* Connecting line for desktop - centered on circles */}
+                        <div className="hidden lg:block absolute top-10 left-[12%] right-[12%] h-[2px] bg-red-500/30 z-0">
+                            <div className="absolute inset-0 bg-red-500 animate-pulse opacity-30" />
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                            {STEPS.map((step, i) => (
+                                <AnimatedItem key={i} delay={i * 300}>
+                                    <div className="relative flex flex-col items-center text-center">
+                                        {/* Step number circle */}
+                                        <div className="relative z-10 w-20 h-20 rounded-full bg-black border-2 border-red-500/30 flex items-center justify-center mb-6 group hover:border-red-500 transition-colors">
+                                            <span className="text-2xl font-bold text-red-500">
+                                                {step.number}
+                                            </span>
+                                            {/* Pulse ring animation */}
+                                            <div
+                                                className="absolute inset-0 rounded-full border-2 border-red-500/30 animate-ping"
+                                                style={{ animationDelay: `${i * 0.5}s`, animationDuration: '2s' }}
+                                            />
+                                        </div>
+
+                                        {/* Icon */}
+                                        <div className="w-14 h-14 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center justify-center mb-4 hover:scale-110 transition-transform duration-300">
+                                            <step.icon className="w-7 h-7 text-red-500" />
+                                        </div>
+
+                                        {/* Content */}
+                                        <h3 className="font-bold text-white text-xl mb-3">{step.title}</h3>
+                                        <p className="text-gray-500 text-sm leading-relaxed max-w-[200px]">{step.description}</p>
+
+                                        {/* Arrow for mobile */}
+                                        {i < STEPS.length - 1 && (
+                                            <div className="mt-6 lg:hidden">
+                                                <div className="w-px h-8 bg-red-500/30 mx-auto" />
+                                                <div className="w-0 h-0 border-l-[6px] border-r-[6px] border-t-[8px] border-l-transparent border-r-transparent border-t-red-500/50 mx-auto" />
+                                            </div>
+                                        )}
+                                    </div>
+                                </AnimatedItem>
+                            ))}
+                        </div>
                     </div>
                 </div>
-            </div>
+            </section>
 
-            {/* RIGHT COLUMN: Visuals */}
-            <div className="absolute lg:relative inset-0 w-full lg:w-1/2 h-full bg-zinc-900 overflow-hidden flex items-center justify-center">
-                {/* Background Gradients */}
-                <div className="absolute inset-0">
-                    <div className="absolute top-0 right-0 w-[80%] h-[80%] bg-blue-600/10 blur-[150px] rounded-full animate-pulse opacity-50" />
-                    <div className="absolute bottom-0 left-0 w-[60%] h-[60%] bg-purple-600/10 blur-[150px] rounded-full opacity-50" />
-                    <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center bg-repeat opacity-20 [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />
+            {/* Features Section */}
+            <AnimatedSection className="py-24 md:py-32 px-6 bg-white/[0.01]">
+                <div className="max-w-5xl mx-auto">
+                    <div className="text-center mb-20">
+                        <span className="text-red-500 font-semibold text-sm uppercase tracking-wider">Features</span>
+                        <h2 className="text-4xl md:text-5xl font-bold text-white tracking-tight mt-4 mb-6">
+                            Everything You Need
+                        </h2>
+                        <p className="text-gray-400 max-w-lg mx-auto text-lg">
+                            A complete solution designed for modern schools.
+                        </p>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {FEATURES.map((feature, i) => (
+                            <AnimatedItem key={i} delay={i * 100}>
+                                <div className="group p-6 rounded-2xl bg-white/[0.02] border border-white/5 hover:border-red-500/30 transition-all duration-300 h-full">
+                                    <div className="w-14 h-14 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300">
+                                        <feature.icon className="w-7 h-7 text-red-500" />
+                                    </div>
+                                    <h3 className="font-bold text-white text-xl mb-3">{feature.title}</h3>
+                                    <p className="text-gray-500 text-sm leading-relaxed">{feature.description}</p>
+                                </div>
+                            </AnimatedItem>
+                        ))}
+                    </div>
                 </div>
+            </AnimatedSection>
 
-                {SLIDES.map((slide, index) => (
-                    <div
-                        key={slide.id}
-                        className={`absolute inset-0 flex items-center justify-center p-12 lg:p-20 transition-all duration-1000 ease-in-out ${index === currentSlide
-                                ? "opacity-100 scale-100 rotate-0"
-                                : "opacity-0 scale-95 rotate-3 pointer-events-none"
-                            }`}
-                    >
-                        {slide.image ? (
-                            <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-white/10 group max-h-[80vh] w-auto">
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                                <img
-                                    src={slide.image}
-                                    alt={slide.imageAlt}
-                                    className="w-full h-full object-contain max-h-[80vh] bg-black/50"
-                                />
-                            </div>
-                        ) : (
-                            // Fallback abstract visualization for slides without images
-                            <div className="relative w-full max-w-md aspect-square">
-                                <div className={`absolute inset-0 bg-gradient-to-br ${slide.gradient} opacity-20 blur-[100px] rounded-full animate-pulse`} />
-                                <div className="relative z-10 w-full h-full border border-white/10 bg-white/5 backdrop-blur-xl rounded-full flex items-center justify-center">
-                                    <slide.icon className="w-32 h-32 text-white/50 animate-bounce" />
+            {/* Benefits Section */}
+            <AnimatedSection className="py-24 md:py-32 px-6">
+                <div className="max-w-4xl mx-auto">
+                    <div className="text-center mb-16">
+                        <span className="text-red-500 font-semibold text-sm uppercase tracking-wider">Benefits</span>
+                        <h2 className="text-4xl md:text-5xl font-bold text-white tracking-tight mt-4 mb-6">
+                            Why Schools Love Us
+                        </h2>
+                    </div>
+
+                    <div className="space-y-6">
+                        <AnimatedItem delay={0}>
+                            <div className="flex items-start gap-6 p-6 rounded-2xl bg-white/[0.02] border border-white/5 hover:border-red-500/30 transition-colors">
+                                <div className="w-14 h-14 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center justify-center flex-shrink-0">
+                                    <Clock className="w-7 h-7 text-red-500" />
+                                </div>
+                                <div>
+                                    <h4 className="font-bold text-white text-xl mb-2">Save Hours Every Week</h4>
+                                    <p className="text-gray-500 leading-relaxed">Eliminate manual attendance taking completely. Teachers can focus on what matters most — teaching.</p>
                                 </div>
                             </div>
-                        )}
+                        </AnimatedItem>
+                        <AnimatedItem delay={150}>
+                            <div className="flex items-start gap-6 p-6 rounded-2xl bg-white/[0.02] border border-white/5 hover:border-red-500/30 transition-colors">
+                                <div className="w-14 h-14 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center justify-center flex-shrink-0">
+                                    <Globe className="w-7 h-7 text-red-500" />
+                                </div>
+                                <div>
+                                    <h4 className="font-bold text-white text-xl mb-2">Access Anywhere</h4>
+                                    <p className="text-gray-500 leading-relaxed">Cloud-based platform accessible from any device, anywhere in the world. No installation required.</p>
+                                </div>
+                            </div>
+                        </AnimatedItem>
+                        <AnimatedItem delay={300}>
+                            <div className="flex items-start gap-6 p-6 rounded-2xl bg-white/[0.02] border border-white/5 hover:border-red-500/30 transition-colors">
+                                <div className="w-14 h-14 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center justify-center flex-shrink-0">
+                                    <Zap className="w-7 h-7 text-red-500" />
+                                </div>
+                                <div>
+                                    <h4 className="font-bold text-white text-xl mb-2">Instant Setup</h4>
+                                    <p className="text-gray-500 leading-relaxed">Get started in minutes, not weeks. No complex installation or lengthy training sessions needed.</p>
+                                </div>
+                            </div>
+                        </AnimatedItem>
                     </div>
-                ))}
-            </div>
+                </div>
+            </AnimatedSection>
+
+            {/* CTA Section */}
+            <AnimatedSection className="py-24 md:py-32 px-6 text-center">
+                <div className="max-w-3xl mx-auto">
+                    <div className="p-12 rounded-3xl bg-white/[0.02] border border-white/10">
+                        <h2 className="text-4xl md:text-5xl font-bold text-white tracking-tight mb-6">
+                            Ready to Transform Attendance?
+                        </h2>
+                        <p className="text-gray-400 mb-10 text-lg max-w-xl mx-auto">
+                            Join the schools already using our platform to save time and keep parents informed.
+                        </p>
+                        <Dialog open={demoOpen} onOpenChange={setDemoOpen}>
+                            <DialogTrigger asChild>
+                                <LiquidGlassButton variant="primary" size="lg">
+                                    Get Started Today
+                                </LiquidGlassButton>
+                            </DialogTrigger>
+                        </Dialog>
+                    </div>
+                </div>
+            </AnimatedSection>
+
+            {/* Footer */}
+            <footer className="py-12 px-6 border-t border-white/5">
+                <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 text-sm text-gray-500">
+                    <div className="flex items-center gap-3">
+                        <span className="font-semibold text-white">{schoolInfo.name}</span>
+                    </div>
+                    <span>&copy; {new Date().getFullYear()} All rights reserved.</span>
+                    <div className="flex items-center gap-6">
+                        <Link to="/auth" className="hover:text-red-500 transition-colors">Admin Login</Link>
+                        <Link to="/parent-login" className="hover:text-red-500 transition-colors">Parent Portal</Link>
+                    </div>
+                </div>
+            </footer>
         </div>
     );
 }

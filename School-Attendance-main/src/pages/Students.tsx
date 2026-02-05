@@ -369,12 +369,12 @@ export default function Students() {
                   <TableCell>{student.grade} - {student.section}</TableCell>
                   <TableCell>
                     {student.isEnrolled ? (
-                      <Badge variant="default" className="bg-green-600">
+                      <Badge variant="default" className="bg-green-500 hover:bg-green-600">
                         <Check className="h-3 w-3 mr-1" />
                         Enrolled
                       </Badge>
                     ) : (
-                      <Badge variant="secondary" className="bg-yellow-600 text-white">
+                      <Badge variant="secondary" className="bg-yellow-500 text-white hover:bg-yellow-600">
                         Not Enrolled
                       </Badge>
                     )}
@@ -393,7 +393,7 @@ export default function Students() {
                     )}
                   </TableCell>
                   <TableCell>
-                    <Badge variant={student.status === "active" ? "default" : "secondary"} className={student.status === "active" ? "bg-school-success" : "bg-muted"}>
+                    <Badge variant={student.status === "active" ? "default" : "secondary"} className={student.status === "active" ? "bg-green-500 hover:bg-green-600" : "bg-apple-gray-200"}>
                       {student.status === "active" ? "Active" : "Inactive"}
                     </Badge>
                   </TableCell>
@@ -466,8 +466,8 @@ export default function Students() {
           {selectedStudent && (
             <div className="space-y-4">
               <div className="flex items-center gap-4">
-                <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center">
-                  <User className="h-8 w-8 text-primary" />
+                <div className="h-16 w-16 rounded-full bg-apple-blue/10 flex items-center justify-center">
+                  <User className="h-8 w-8 text-apple-blue" />
                 </div>
                 <div>
                   <h3 className="text-xl font-semibold">{selectedStudent.name}</h3>
@@ -498,7 +498,7 @@ export default function Students() {
                 </div>
                 <div>
                   <h4 className="text-sm font-medium text-muted-foreground">Status</h4>
-                  <Badge variant={selectedStudent.status === "active" ? "default" : "secondary"} className={selectedStudent.status === "active" ? "bg-school-success" : "bg-muted"}>
+                  <Badge variant={selectedStudent.status === "active" ? "default" : "secondary"} className={selectedStudent.status === "active" ? "bg-green-500 hover:bg-green-600" : "bg-apple-gray-200"}>
                     {selectedStudent.status === "active" ? "Active" : "Inactive"}
                   </Badge>
                 </div>
@@ -575,8 +575,8 @@ export default function Students() {
           {selectedStudent && (
             <div className="p-4 border rounded-md">
               <div className="flex justify-center mb-4">
-                <div className="h-24 w-24 rounded-full bg-primary/10 flex items-center justify-center">
-                  <User className="h-12 w-12 text-primary" />
+                <div className="h-24 w-24 rounded-full bg-apple-blue/10 flex items-center justify-center">
+                  <User className="h-12 w-12 text-apple-blue" />
                 </div>
               </div>
               <div className="text-center mb-4">
@@ -590,7 +590,7 @@ export default function Students() {
                   </div>
                 )}
               </div>
-              <div className="bg-gray-100 p-4 rounded-md flex justify-center items-center">
+              <div className="bg-apple-gray-50 p-4 rounded-xl flex justify-center items-center">
                 <QrCode className="h-24 w-24" />
               </div>
             </div>

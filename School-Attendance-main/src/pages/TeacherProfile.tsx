@@ -221,7 +221,7 @@ export default function TeacherProfile() {
   };
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
+    <div className="container mx-auto p-6 space-y-6 bg-apple-gray-50 min-h-screen max-w-7xl">
       <Button
         variant="ghost"
         onClick={() => navigate('/teachers')}
@@ -260,8 +260,7 @@ export default function TeacherProfile() {
               </div>
               <div className="flex flex-wrap gap-2 mt-4">
                 {teacher.subjects.map((subject, index) => (
-                  <Badge key={index} variant="secondary">
-                    <BookOpen className="h-3 w-3 mr-1" />
+                  <Badge key={index} variant="secondary" className="bg-apple-blue/10 text-apple-blue hover:bg-apple-blue/20 transition-colors">
                     {subject}
                   </Badge>
                 ))}
@@ -306,17 +305,17 @@ export default function TeacherProfile() {
 
       {/* Tabs for Schedule and Classes */}
       <Tabs defaultValue="schedule" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="schedule">
-            <Calendar className="h-4 w-4 mr-2" />
+        <TabsList className="w-full justify-start h-auto p-1 bg-white/50 backdrop-blur-sm rounded-full border border-apple-gray-200 inline-flex gap-1 mb-6">
+          <TabsTrigger value="schedule" className="rounded-full px-4 py-2 data-[state=active]:bg-apple-blue data-[state=active]:text-white data-[state=active]:shadow-sm transition-all hover:bg-apple-gray-100 flex items-center gap-2">
+            <Calendar className="h-4 w-4" />
             Schedule
           </TabsTrigger>
-          <TabsTrigger value="classes">
-            <BookOpen className="h-4 w-4 mr-2" />
+          <TabsTrigger value="classes" className="rounded-full px-4 py-2 data-[state=active]:bg-apple-blue data-[state=active]:text-white data-[state=active]:shadow-sm transition-all hover:bg-apple-gray-100 flex items-center gap-2">
+            <BookOpen className="h-4 w-4" />
             Classes
           </TabsTrigger>
-          <TabsTrigger value="students">
-            <Users className="h-4 w-4 mr-2" />
+          <TabsTrigger value="students" className="rounded-full px-4 py-2 data-[state=active]:bg-apple-blue data-[state=active]:text-white data-[state=active]:shadow-sm transition-all hover:bg-apple-gray-100 flex items-center gap-2">
+            <Users className="h-4 w-4" />
             Students
           </TabsTrigger>
         </TabsList>
@@ -335,13 +334,13 @@ export default function TeacherProfile() {
                   if (daySchedule.length === 0) return null;
 
                   return (
-                    <div key={day} className="border-l-4 border-primary pl-4">
+                    <div key={day} className="border-l-4 border-apple-blue pl-4">
                       <h3 className="text-lg font-semibold capitalize mb-3">{day}</h3>
                       <div className="space-y-2">
                         {daySchedule.map(schedule => (
                           <div
                             key={schedule.id}
-                            className="flex items-center justify-between p-3 bg-muted rounded-lg"
+                            className="flex items-center justify-between p-3 bg-apple-gray-50 rounded-xl border border-apple-gray-100"
                           >
                             <div className="flex-1">
                               <p className="font-medium">
@@ -466,6 +465,6 @@ export default function TeacherProfile() {
           )}
         </TabsContent>
       </Tabs>
-    </div>
+    </div >
   );
 }

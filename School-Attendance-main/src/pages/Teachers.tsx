@@ -277,7 +277,7 @@ export default function Teachers() {
                   <TableCell>
                     <div className="flex items-center gap-3">
                       <Avatar>
-                        <AvatarFallback className="bg-school-primary text-white">
+                        <AvatarFallback className="bg-apple-blue text-white">
                           {teacher.name.split(' ').map(n => n[0]).join('')}
                         </AvatarFallback>
                       </Avatar>
@@ -311,7 +311,7 @@ export default function Teachers() {
                   <TableCell>
                     <div className="space-y-1">
                       {teacher.classes.map((cls, i) => (
-                        <Badge key={i} className="bg-school-light text-school-dark mr-1">
+                        <Badge key={i} className="bg-apple-gray-100 text-apple-gray-800 hover:bg-apple-gray-200 mr-1">
                           {cls}
                         </Badge>
                       ))}
@@ -390,7 +390,7 @@ export default function Teachers() {
             <div className="space-y-4">
               <div className="flex items-center gap-4">
                 <Avatar className="h-16 w-16">
-                  <AvatarFallback className="text-lg bg-school-primary text-white">
+                  <AvatarFallback className="text-lg bg-apple-blue text-white">
                     {selectedTeacher.name.split(' ').map(n => n[0]).join('')}
                   </AvatarFallback>
                 </Avatar>
@@ -434,7 +434,7 @@ export default function Teachers() {
                 <h4 className="text-sm font-medium text-muted-foreground mb-2">Classes</h4>
                 <div className="flex flex-wrap gap-1">
                   {selectedTeacher.classes.map((cls, i) => (
-                    <Badge key={i} className="bg-school-light text-school-dark">
+                    <Badge key={i} className="bg-apple-gray-100 text-apple-gray-800 hover:bg-apple-gray-200">
                       {cls}
                     </Badge>
                   ))}

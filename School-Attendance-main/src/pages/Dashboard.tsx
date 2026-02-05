@@ -14,9 +14,9 @@ import { loadDashboardConfig, type DashboardConfig } from "@/components/dashboar
 
 export default function Dashboard() {
   const [config, setConfig] = useState<DashboardConfig>(loadDashboardConfig());
-  const { 
-    stats, 
-    attendanceData, 
+  const {
+    stats,
+    attendanceData,
     recentActivities,
     attendanceOverview,
     classroomAttendance,
@@ -26,28 +26,30 @@ export default function Dashboard() {
   } = useDashboardData();
 
   return (
-    <div className="space-y-6">
-      <DashboardHeader onConfigChange={setConfig} />
-      
-      {config.statsCards && <DashboardStats stats={stats} />}
+    <div className="min-h-screen bg-apple-gray-50">
+      <div className="max-w-7xl mx-auto px-6 py-8 space-y-8">
+        <DashboardHeader onConfigChange={setConfig} />
 
-      <div className="grid gap-4 md:grid-cols-2">
-        {config.attendanceChart && <AttendanceChart data={attendanceData} />}
-        {config.recentActivities && <RecentActivities activities={recentActivities} />}
-      </div>
-      
-      {config.quickActions && <QuickActions />}
-      
-      {config.attendanceOverview && <AttendanceOverview data={attendanceOverview} />}
-      
-      <div className="grid gap-4 md:grid-cols-2">
-        {config.classroomAttendance && <ClassroomAttendanceReport data={classroomAttendance} />}
-        {config.busAttendance && <BusAttendanceReport data={busAttendance} />}
-      </div>
-      
-      <div className="grid gap-4 md:grid-cols-2">
-        {config.weekdayPattern && <WeekdayPattern data={weekdayData} />}
-        {config.hourlyCheckins && <HourlyCheckins data={hourlyData} />}
+        {config.statsCards && <DashboardStats stats={stats} />}
+
+        <div className="grid gap-6 lg:grid-cols-2">
+          {config.attendanceChart && <AttendanceChart data={attendanceData} />}
+          {config.recentActivities && <RecentActivities activities={recentActivities} />}
+        </div>
+
+        {config.quickActions && <QuickActions />}
+
+        {config.attendanceOverview && <AttendanceOverview data={attendanceOverview} />}
+
+        <div className="grid gap-6 lg:grid-cols-2">
+          {config.classroomAttendance && <ClassroomAttendanceReport data={classroomAttendance} />}
+          {config.busAttendance && <BusAttendanceReport data={busAttendance} />}
+        </div>
+
+        <div className="grid gap-6 lg:grid-cols-2">
+          {config.weekdayPattern && <WeekdayPattern data={weekdayData} />}
+          {config.hourlyCheckins && <HourlyCheckins data={hourlyData} />}
+        </div>
       </div>
     </div>
   );

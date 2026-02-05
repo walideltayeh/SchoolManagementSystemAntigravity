@@ -3,10 +3,10 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { School, Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, ArrowLeft } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export default function Auth() {
   const { signIn, signUp } = useAuth();
@@ -97,39 +97,69 @@ export default function Auth() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/10 via-background to-secondary/10 p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center space-y-2">
-          <div className="flex justify-center mb-4">
-            <div className="p-3 bg-primary/10 rounded-full">
-              <School className="h-8 w-8 text-primary" />
-            </div>
+    <div className="min-h-screen flex items-center justify-center bg-apple-gray-50 p-6">
+      {/* Back Button */}
+      <Link
+        to="/"
+        className="fixed top-6 left-6 flex items-center gap-2 text-apple-gray-500 hover:text-apple-gray-800 transition-colors"
+      >
+        <ArrowLeft className="w-5 h-5" />
+        <span className="text-sm font-medium">Back</span>
+      </Link>
+
+      {/* Auth Card */}
+      <div className="w-full max-w-md animate-fade-in-up">
+        {/* Logo/Header */}
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 shadow-lg shadow-blue-500/25 mb-6">
+            <span className="text-white font-bold text-2xl">A</span>
           </div>
-          <CardTitle className="text-2xl">School Management System</CardTitle>
-          <CardDescription>Sign in to your account or create a new one</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Tabs defaultValue="signup" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="signin">Sign In</TabsTrigger>
-              <TabsTrigger value="signup">Sign Up</TabsTrigger>
+          <h1 className="text-2xl font-semibold text-apple-gray-800">
+            Admin Portal
+          </h1>
+          <p className="mt-2 text-apple-gray-500">
+            Sign in to manage your school
+          </p>
+        </div>
+
+        {/* Auth Form Card */}
+        <div className="bg-white rounded-apple-xl shadow-apple-card p-8">
+          <Tabs defaultValue="signin" className="w-full">
+            <TabsList className="grid w-full grid-cols-2 bg-apple-gray-100 p-1 rounded-xl mb-6">
+              <TabsTrigger
+                value="signin"
+                className="rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm text-sm font-medium"
+              >
+                Sign In
+              </TabsTrigger>
+              <TabsTrigger
+                value="signup"
+                className="rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm text-sm font-medium"
+              >
+                Sign Up
+              </TabsTrigger>
             </TabsList>
 
-            <TabsContent value="signin">
-              <form onSubmit={handleSignIn} className="space-y-4">
+            <TabsContent value="signin" className="mt-0">
+              <form onSubmit={handleSignIn} className="space-y-5">
                 <div className="space-y-2">
-                  <Label htmlFor="signin-email">Email</Label>
+                  <Label htmlFor="signin-email" className="text-apple-gray-700 font-medium text-sm">
+                    Email
+                  </Label>
                   <Input
                     id="signin-email"
                     type="email"
-                    placeholder="your.email@school.edu"
+                    placeholder="admin@school.edu"
                     value={signInEmail}
                     onChange={(e) => setSignInEmail(e.target.value)}
                     required
+                    className="h-12 rounded-xl border-apple-gray-200 focus:border-apple-blue focus:ring-apple-blue/20"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="signin-password">Password</Label>
+                  <Label htmlFor="signin-password" className="text-apple-gray-700 font-medium text-sm">
+                    Password
+                  </Label>
                   <div className="relative">
                     <Input
                       id="signin-password"
@@ -138,30 +168,37 @@ export default function Auth() {
                       value={signInPassword}
                       onChange={(e) => setSignInPassword(e.target.value)}
                       required
+                      className="h-12 rounded-xl border-apple-gray-200 focus:border-apple-blue focus:ring-apple-blue/20 pr-12"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-apple-gray-400 hover:text-apple-gray-600 transition-colors"
                     >
                       {showPassword ? (
-                        <EyeOff className="h-4 w-4" />
+                        <EyeOff className="h-5 w-5" />
                       ) : (
-                        <Eye className="h-4 w-4" />
+                        <Eye className="h-5 w-5" />
                       )}
                     </button>
                   </div>
                 </div>
-                <Button type="submit" className="w-full" disabled={isLoading}>
+                <Button
+                  type="submit"
+                  className="w-full h-12 bg-apple-blue hover:bg-blue-600 text-white rounded-xl font-medium text-base transition-all hover:shadow-lg hover:shadow-blue-500/25"
+                  disabled={isLoading}
+                >
                   {isLoading ? "Signing in..." : "Sign In"}
                 </Button>
               </form>
             </TabsContent>
 
-            <TabsContent value="signup">
-              <form onSubmit={handleSignUp} className="space-y-4">
+            <TabsContent value="signup" className="mt-0">
+              <form onSubmit={handleSignUp} className="space-y-5">
                 <div className="space-y-2">
-                  <Label htmlFor="signup-name">Full Name</Label>
+                  <Label htmlFor="signup-name" className="text-apple-gray-700 font-medium text-sm">
+                    Full Name
+                  </Label>
                   <Input
                     id="signup-name"
                     type="text"
@@ -169,32 +206,41 @@ export default function Auth() {
                     value={signUpFullName}
                     onChange={(e) => setSignUpFullName(e.target.value)}
                     required
+                    className="h-12 rounded-xl border-apple-gray-200 focus:border-apple-blue focus:ring-apple-blue/20"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="signup-email">Email</Label>
+                  <Label htmlFor="signup-email" className="text-apple-gray-700 font-medium text-sm">
+                    Email
+                  </Label>
                   <Input
                     id="signup-email"
                     type="email"
-                    placeholder="your.email@school.edu"
+                    placeholder="admin@school.edu"
                     value={signUpEmail}
                     onChange={(e) => setSignUpEmail(e.target.value)}
                     required
+                    className="h-12 rounded-xl border-apple-gray-200 focus:border-apple-blue focus:ring-apple-blue/20"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="signup-password">Password</Label>
+                  <Label htmlFor="signup-password" className="text-apple-gray-700 font-medium text-sm">
+                    Password
+                  </Label>
                   <Input
                     id="signup-password"
                     type="password"
-                    placeholder="Create a password (min. 6 characters)"
+                    placeholder="Min. 6 characters"
                     value={signUpPassword}
                     onChange={(e) => setSignUpPassword(e.target.value)}
                     required
+                    className="h-12 rounded-xl border-apple-gray-200 focus:border-apple-blue focus:ring-apple-blue/20"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="signup-confirm-password">Confirm Password</Label>
+                  <Label htmlFor="signup-confirm-password" className="text-apple-gray-700 font-medium text-sm">
+                    Confirm Password
+                  </Label>
                   <Input
                     id="signup-confirm-password"
                     type="password"
@@ -202,16 +248,26 @@ export default function Auth() {
                     value={signUpConfirmPassword}
                     onChange={(e) => setSignUpConfirmPassword(e.target.value)}
                     required
+                    className="h-12 rounded-xl border-apple-gray-200 focus:border-apple-blue focus:ring-apple-blue/20"
                   />
                 </div>
-                <Button type="submit" className="w-full" disabled={isLoading}>
+                <Button
+                  type="submit"
+                  className="w-full h-12 bg-apple-blue hover:bg-blue-600 text-white rounded-xl font-medium text-base transition-all hover:shadow-lg hover:shadow-blue-500/25"
+                  disabled={isLoading}
+                >
                   {isLoading ? "Creating account..." : "Create Account"}
                 </Button>
               </form>
             </TabsContent>
           </Tabs>
-        </CardContent>
-      </Card>
+        </div>
+
+        {/* Footer */}
+        <p className="text-center text-sm text-apple-gray-400 mt-6">
+          Protected by enterprise-grade security
+        </p>
+      </div>
     </div>
   );
 }

@@ -446,7 +446,7 @@ export default function Attendance() {
             </p>
           </div>
           <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2 bg-muted p-2 rounded-md">
+            <div className="flex items-center gap-2 bg-apple-gray-100 p-2 rounded-lg text-apple-gray-600">
               <Clock className="h-5 w-5 text-school-primary" />
               <span className="font-mono">{formatTime(currentTime)}</span>
             </div>
@@ -473,7 +473,7 @@ export default function Attendance() {
                   todaySchedules.map((schedule, index) => (
                     <div
                       key={index}
-                      className={`border rounded-md p-3 ${schedule.teacherId === teacherId ? 'bg-primary/10 border-primary/30' : ''}`}
+                      className={`border rounded-xl p-3 transition-colors ${schedule.teacherId === teacherId ? 'bg-apple-blue/5 border-apple-blue/20' : 'bg-white border-apple-gray-100'}`}
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
@@ -631,7 +631,7 @@ export default function Attendance() {
             Scan student barcodes for attendance tracking
           </p>
         </div>
-        <div className="flex items-center gap-2 bg-muted p-2 rounded-md">
+        <div className="flex items-center gap-2 bg-apple-gray-100 p-2 rounded-lg text-apple-gray-600">
           <Clock className="h-5 w-5 text-school-primary" />
           <span className="font-mono">{formatTime(currentTime)}</span>
         </div>
@@ -742,7 +742,7 @@ export default function Attendance() {
                 </div>
               )}
 
-              <div className="rounded-lg border p-4 space-y-2 bg-muted/50">
+              <div className="rounded-xl border border-apple-gray-200 p-4 space-y-2 bg-apple-gray-50">
                 <h4 className="font-semibold flex items-center gap-2">
                   <User className="h-4 w-4 text-primary" />
                   Classroom Device Mode

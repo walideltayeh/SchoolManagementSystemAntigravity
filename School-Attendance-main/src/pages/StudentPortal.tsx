@@ -30,7 +30,7 @@ export default function StudentPortal() {
   const loadStudentData = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      
+
       if (!user) {
         navigate("/auth");
         return;
@@ -72,7 +72,7 @@ export default function StudentPortal() {
 
   if (!student) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/10 to-accent/10 p-4">
+      <div className="min-h-screen flex items-center justify-center bg-apple-gray-50 p-4">
         <Card className="max-w-md">
           <CardHeader>
             <CardTitle>No Student Record Found</CardTitle>
@@ -92,7 +92,7 @@ export default function StudentPortal() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/10 to-accent/10 p-4">
+    <div className="min-h-screen bg-apple-gray-50 p-4">
       <div className="max-w-2xl mx-auto space-y-6">
         {/* Header */}
         <Card>
@@ -105,8 +105,8 @@ export default function StudentPortal() {
                   className="w-16 h-16 rounded-full object-cover"
                 />
               ) : (
-                <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
-                  <User className="h-8 w-8 text-primary" />
+                <div className="w-16 h-16 rounded-full bg-apple-blue/10 flex items-center justify-center">
+                  <User className="h-8 w-8 text-apple-blue" />
                 </div>
               )}
               <div>

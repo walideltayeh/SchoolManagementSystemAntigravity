@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { 
-  Bell, 
-  Clock, 
-  Check, 
+import {
+  Bell,
+  Clock,
+  Check,
   X,
   FileDown,
   RefreshCw,
@@ -43,7 +43,7 @@ export default function Notifications() {
   const loadNotifications = async () => {
     try {
       setLoading(true);
-      
+
       // Fetch recent attendance records (last 7 days)
       const sevenDaysAgo = new Date();
       sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
@@ -85,9 +85,9 @@ export default function Notifications() {
         else if (diffDays === 1) date = "Yesterday";
         else date = scannedAt.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 
-        const location = record.type === 'bus' 
+        const location = record.type === 'bus'
           ? record.bus_routes?.name || 'Unknown Bus'
-          : record.classes 
+          : record.classes
             ? `${record.classes.grade} - Section ${record.classes.section}`
             : 'Unknown Class';
 
@@ -116,19 +116,19 @@ export default function Notifications() {
       setLoading(false);
     }
   };
-  
-  const filteredNotifications = activeTab === "all" 
-    ? notificationList 
+
+  const filteredNotifications = activeTab === "all"
+    ? notificationList
     : activeTab === "unread"
       ? notificationList.filter(n => !n.read)
       : notificationList.filter(n => n.type === activeTab);
-  
+
   const markAllAsRead = () => {
     setNotificationList(notificationList.map(n => ({ ...n, read: true })));
   };
-  
+
   const markAsRead = (id: string) => {
-    setNotificationList(notificationList.map(n => 
+    setNotificationList(notificationList.map(n =>
       n.id === id ? { ...n, read: true } : n
     ));
   };
@@ -153,7 +153,7 @@ export default function Notifications() {
           </Button>
         </div>
       </div>
-      
+
       <Card>
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between">
@@ -169,33 +169,33 @@ export default function Notifications() {
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="all" className="space-y-4" onValueChange={setActiveTab}>
-            <TabsList>
-              <TabsTrigger value="all">
+            <TabsList className="mb-6 w-full justify-start h-auto p-1 bg-white/50 backdrop-blur-sm rounded-full border border-apple-gray-200 inline-flex gap-1">
+              <TabsTrigger value="all" className="rounded-full px-4 py-2 data-[state=active]:bg-apple-blue data-[state=active]:text-white data-[state=active]:shadow-sm transition-all hover:bg-apple-gray-100">
                 All
-                <Badge variant="secondary" className="ml-2">
+                <Badge variant="secondary" className="ml-2 bg-white/20 text-current">
                   {notificationList.length}
                 </Badge>
               </TabsTrigger>
-              <TabsTrigger value="unread">
+              <TabsTrigger value="unread" className="rounded-full px-4 py-2 data-[state=active]:bg-apple-blue data-[state=active]:text-white data-[state=active]:shadow-sm transition-all hover:bg-apple-gray-100">
                 Unread
-                <Badge variant="secondary" className="ml-2">
+                <Badge variant="secondary" className="ml-2 bg-white/20 text-current">
                   {notificationList.filter(n => !n.read).length}
                 </Badge>
               </TabsTrigger>
-              <TabsTrigger value="classroom">
+              <TabsTrigger value="classroom" className="rounded-full px-4 py-2 data-[state=active]:bg-apple-blue data-[state=active]:text-white data-[state=active]:shadow-sm transition-all hover:bg-apple-gray-100">
                 Classroom
-                <Badge variant="secondary" className="ml-2">
+                <Badge variant="secondary" className="ml-2 bg-white/20 text-current">
                   {notificationList.filter(n => n.type === "classroom").length}
                 </Badge>
               </TabsTrigger>
-              <TabsTrigger value="bus">
+              <TabsTrigger value="bus" className="rounded-full px-4 py-2 data-[state=active]:bg-apple-blue data-[state=active]:text-white data-[state=active]:shadow-sm transition-all hover:bg-apple-gray-100">
                 Bus
-                <Badge variant="secondary" className="ml-2">
+                <Badge variant="secondary" className="ml-2 bg-white/20 text-current">
                   {notificationList.filter(n => n.type === "bus").length}
                 </Badge>
               </TabsTrigger>
             </TabsList>
-            
+
             <TabsContent value={activeTab} className="space-y-4">
               {loading ? (
                 <div className="text-center py-8">
@@ -219,27 +219,26 @@ export default function Notifications() {
                   {Array.from(new Set(filteredNotifications.map(n => n.date))).map(date => (
                     <div key={date} className="space-y-3">
                       <h3 className="text-sm font-medium text-muted-foreground">{date}</h3>
-                      
+
                       {filteredNotifications
                         .filter(n => n.date === date)
                         .map((notification) => (
-                          <div 
-                            key={notification.id} 
+                          <div
+                            key={notification.id}
                             className={`rounded-lg border p-4 ${!notification.read ? "bg-muted/30" : ""}`}
                           >
                             <div className="flex items-start gap-4">
-                              <div className={`h-10 w-10 rounded-full flex items-center justify-center ${
-                                notification.type === "classroom" 
-                                  ? "bg-indigo-100" 
-                                  : "bg-amber-100"
-                              }`}>
+                              <div className={`h-10 w-10 rounded-full flex items-center justify-center ${notification.type === "classroom"
+                                  ? "bg-blue-50"
+                                  : "bg-orange-50"
+                                }`}>
                                 {notification.type === "classroom" ? (
-                                  <User className="h-5 w-5 text-indigo-600" />
+                                  <User className="h-5 w-5 text-apple-blue" />
                                 ) : (
-                                  <Bus className="h-5 w-5 text-amber-600" />
+                                  <Bus className="h-5 w-5 text-orange-500" />
                                 )}
                               </div>
-                              
+
                               <div className="flex-1 space-y-1">
                                 <div className="flex items-center justify-between">
                                   <p className="font-medium">
@@ -253,36 +252,36 @@ export default function Notifications() {
                                       {notification.timeAgo}
                                     </span>
                                     {!notification.read && (
-                                      <Badge className="h-2 w-2 rounded-full p-0 bg-school-primary" />
+                                      <Badge className="h-2 w-2 rounded-full p-0 bg-apple-blue" />
                                     )}
                                   </div>
                                 </div>
-                                
+
                                 <p>
-                                  {notification.type === "classroom" 
+                                  {notification.type === "classroom"
                                     ? `Checked in to ${notification.location} at ${notification.time}`
                                     : `Boarded ${notification.location} at ${notification.time}`
                                   }
                                 </p>
-                                
+
                                 <div className="flex items-center gap-2 text-xs text-muted-foreground mt-2">
                                   <Clock className="h-3 w-3" />
                                   <span>{notification.time}</span>
-                                  
+
                                   <Badge variant="outline" className={
-                                    notification.type === "classroom" 
-                                      ? "text-indigo-700 bg-indigo-50 ml-2" 
+                                    notification.type === "classroom"
+                                      ? "text-indigo-700 bg-indigo-50 ml-2"
                                       : "text-amber-700 bg-amber-50 ml-2"
                                   }>
                                     {notification.type === "classroom" ? "Classroom" : "Bus"}
                                   </Badge>
                                 </div>
                               </div>
-                              
+
                               {!notification.read && (
-                                <Button 
-                                  variant="ghost" 
-                                  size="icon" 
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
                                   className="h-8 w-8"
                                   onClick={() => markAsRead(notification.id)}
                                 >
@@ -292,7 +291,7 @@ export default function Notifications() {
                               )}
                             </div>
                           </div>
-                         ))}
+                        ))}
                     </div>
                   ))}
                 </>
@@ -310,7 +309,7 @@ export default function Notifications() {
           </Button>
         </CardFooter>
       </Card>
-      
+
       <Card>
         <CardHeader>
           <CardTitle>Notification Settings</CardTitle>
@@ -331,7 +330,7 @@ export default function Notifications() {
                 </div>
                 <Switch id="classroom" defaultChecked />
               </div>
-              
+
               <div className="flex items-center justify-between space-x-2 rounded-lg border p-3">
                 <div className="space-y-0.5">
                   <Label htmlFor="bus">Bus Check-ins</Label>
@@ -341,7 +340,7 @@ export default function Notifications() {
                 </div>
                 <Switch id="bus" defaultChecked />
               </div>
-              
+
               <div className="flex items-center justify-between space-x-2 rounded-lg border p-3">
                 <div className="space-y-0.5">
                   <Label htmlFor="absent">Absence Alerts</Label>
@@ -351,7 +350,7 @@ export default function Notifications() {
                 </div>
                 <Switch id="absent" defaultChecked />
               </div>
-              
+
               <div className="flex items-center justify-between space-x-2 rounded-lg border p-3">
                 <div className="space-y-0.5">
                   <Label htmlFor="late">Late Arrivals</Label>
@@ -361,7 +360,7 @@ export default function Notifications() {
                 </div>
                 <Switch id="late" defaultChecked />
               </div>
-              
+
               <div className="flex items-center justify-between space-x-2 rounded-lg border p-3">
                 <div className="space-y-0.5">
                   <Label htmlFor="events">School Events</Label>
@@ -371,7 +370,7 @@ export default function Notifications() {
                 </div>
                 <Switch id="events" />
               </div>
-              
+
               <div className="flex items-center justify-between space-x-2 rounded-lg border p-3">
                 <div className="space-y-0.5">
                   <Label htmlFor="system">System Alerts</Label>
@@ -383,7 +382,7 @@ export default function Notifications() {
               </div>
             </div>
           </div>
-          
+
           <div className="space-y-3">
             <h3 className="font-medium">Delivery Methods</h3>
             <div className="grid gap-3 sm:grid-cols-2">
@@ -396,7 +395,7 @@ export default function Notifications() {
                 </div>
                 <Switch id="email" defaultChecked />
               </div>
-              
+
               <div className="flex items-center justify-between space-x-2 rounded-lg border p-3">
                 <div className="space-y-0.5">
                   <Label htmlFor="sms">SMS Notifications</Label>
@@ -406,7 +405,7 @@ export default function Notifications() {
                 </div>
                 <Switch id="sms" defaultChecked />
               </div>
-              
+
               <div className="flex items-center justify-between space-x-2 rounded-lg border p-3">
                 <div className="space-y-0.5">
                   <Label htmlFor="app">In-App Notifications</Label>
@@ -416,7 +415,7 @@ export default function Notifications() {
                 </div>
                 <Switch id="app" defaultChecked />
               </div>
-              
+
               <div className="flex items-center justify-between space-x-2 rounded-lg border p-3">
                 <div className="space-y-0.5">
                   <Label htmlFor="push">Push Notifications</Label>

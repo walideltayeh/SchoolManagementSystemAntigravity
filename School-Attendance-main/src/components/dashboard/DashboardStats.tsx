@@ -1,6 +1,4 @@
-
 import { ReactNode } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export interface StatCardProps {
   title: string;
@@ -12,22 +10,23 @@ export interface StatCardProps {
 
 export function StatCard({ title, value, icon, change, changeType }: StatCardProps) {
   return (
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-between pb-2">
-        <CardTitle className="text-sm font-medium">{title}</CardTitle>
-        {icon}
-      </CardHeader>
-      <CardContent>
-        <div className="text-2xl font-bold">{value}</div>
-        <p className={`text-xs ${
-          changeType === 'positive' ? 'text-green-500' : 
-          changeType === 'negative' ? 'text-red-500' : 
-          'text-zinc-500'
-        }`}>
+    <div className="bg-white rounded-apple-xl p-6 shadow-apple-card hover:shadow-apple-hover transition-shadow duration-300">
+      <div className="flex items-center justify-between mb-4">
+        <span className="text-sm font-medium text-apple-gray-500">{title}</span>
+        <div className="text-apple-gray-400">
+          {icon}
+        </div>
+      </div>
+      <div className="space-y-1">
+        <div className="text-3xl font-semibold text-apple-gray-800 tracking-tight">{value}</div>
+        <p className={`text-sm font-medium ${changeType === 'positive' ? 'text-apple-green' :
+            changeType === 'negative' ? 'text-apple-red' :
+              'text-apple-gray-500'
+          }`}>
           {change}
         </p>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }
 
@@ -37,7 +36,7 @@ interface DashboardStatsProps {
 
 export function DashboardStats({ stats }: DashboardStatsProps) {
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+    <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
       {stats.map((stat, i) => (
         <StatCard key={i} {...stat} />
       ))}

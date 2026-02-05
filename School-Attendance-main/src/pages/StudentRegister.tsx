@@ -34,18 +34,18 @@ export default function StudentRegister() {
   const navigate = useNavigate();
   const location = useLocation();
   const editStudent = location.state?.student;
-  
+
   // Extract bus assignment data if editing
   const busAssignment = editStudent?.bus_assignments?.[0];
   const busRouteId = busAssignment?.route_id;
   const busStopId = busAssignment?.stop_id;
-  
+
   const [barcodeValue, setBarcodeValue] = useState(editStudent?.student_code || "STU" + Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
   const [hasAllergies, setHasAllergies] = useState(editStudent?.allergies || false);
   const [requiresBus, setRequiresBus] = useState(!!busRouteId);
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string>(editStudent?.photo_url || "");
-  
+
   // Student form state
   const [firstName, setFirstName] = useState(editStudent?.full_name?.split(' ')[0] || "");
   const [lastName, setLastName] = useState(editStudent?.full_name?.split(' ').slice(1).join(' ') || "");
@@ -58,14 +58,14 @@ export default function StudentRegister() {
   const [section, setSection] = useState(editStudent?.section || "");
   const [busRoute, setBusRoute] = useState(busRouteId || "");
   const [address, setAddress] = useState(editStudent?.address || "");
-  
+
   // Guardian form state
   const [guardianName, setGuardianName] = useState("");
   const [guardianEmail, setGuardianEmail] = useState("");
   const [guardianUsername, setGuardianUsername] = useState("");
   const [guardianPhone, setGuardianPhone] = useState("");
   const [guardianRelation, setGuardianRelation] = useState("");
-  
+
   // Loaded data
   const [classes, setClasses] = useState<ClassInfo[]>([]);
   const [busRoutes, setBusRoutes] = useState<BusRoute[]>([]);
@@ -80,14 +80,14 @@ export default function StudentRegister() {
     const loadData = async () => {
       const loadedClasses = dataService.getClasses();
       setClasses(loadedClasses);
-      
+
       // Fetch bus routes from Supabase
       const { data: routes, error } = await supabase
         .from('bus_routes')
         .select('*')
         .eq('status', 'active')
         .order('name');
-      
+
       if (error) {
         console.error("Error loading bus routes:", error);
         toast({
@@ -111,9 +111,9 @@ export default function StudentRegister() {
         console.log('Loaded bus routes:', mappedRoutes);
         setBusRoutes(mappedRoutes);
       }
-      
+
       getAvailableGrades().then(grades => setAvailableGrades(grades));
-      
+
       // Load guardian info if editing
       if (editStudent?.id) {
         const { data: guardians } = await supabase
@@ -122,7 +122,7 @@ export default function StudentRegister() {
           .eq('student_id', editStudent.id)
           .eq('is_primary', true)
           .single();
-        
+
         if (guardians) {
           setGuardianName(guardians.full_name);
           setGuardianEmail(guardians.email || "");
@@ -131,7 +131,7 @@ export default function StudentRegister() {
         }
       }
     };
-    
+
     loadData();
   }, [editStudent?.id]);
 
@@ -151,7 +151,7 @@ export default function StudentRegister() {
           .eq('grade', grade)
           .eq('section', section)
           .limit(1);
-        
+
         if (matchingClasses && matchingClasses.length > 0) {
           setMatchingClass(matchingClasses[0]);
         } else {
@@ -161,7 +161,7 @@ export default function StudentRegister() {
         setMatchingClass(null);
       }
     };
-    
+
     checkMatchingClass();
   }, [grade, section]);
 
@@ -172,11 +172,11 @@ export default function StudentRegister() {
       const birthDate = new Date(dateOfBirth);
       let calculatedAge = today.getFullYear() - birthDate.getFullYear();
       const monthDiff = today.getMonth() - birthDate.getMonth();
-      
+
       if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
         calculatedAge--;
       }
-      
+
       setAge(calculatedAge);
     } else {
       setAge(null);
@@ -194,7 +194,7 @@ export default function StudentRegister() {
         });
         return;
       }
-      
+
       if (!file.type.startsWith('image/')) {
         toast({
           title: "Invalid File Type",
@@ -203,9 +203,9 @@ export default function StudentRegister() {
         });
         return;
       }
-      
+
       setPhotoFile(file);
-      
+
       const reader = new FileReader();
       reader.onloadend = () => {
         setPhotoPreview(reader.result as string);
@@ -216,11 +216,11 @@ export default function StudentRegister() {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    
+
     if (isSubmitting) return;
-    
+
     console.log('=== FORM SUBMISSION STARTED ===', { isEdit: !!editStudent });
-    
+
     // Validate all fields before showing confirmation
     if (!firstName || !lastName || !grade || !section || !bloodType) {
       toast({
@@ -235,7 +235,7 @@ export default function StudentRegister() {
     if (dateOfBirth) {
       const birthDate = new Date(dateOfBirth);
       const today = new Date();
-      
+
       // Check if date is not in the future
       if (birthDate > today) {
         toast({
@@ -245,7 +245,7 @@ export default function StudentRegister() {
         });
         return;
       }
-      
+
       // Check if age is within reasonable range (2-20 years for school)
       if (age !== null && (age < 2 || age > 20)) {
         toast({
@@ -256,7 +256,7 @@ export default function StudentRegister() {
         return;
       }
     }
-    
+
     if (hasAllergies && !allergyDetails) {
       toast({
         title: "Missing Information",
@@ -265,7 +265,7 @@ export default function StudentRegister() {
       });
       return;
     }
-    
+
     if (requiresBus && (!busRoute || !address)) {
       toast({
         title: "Missing Information",
@@ -274,7 +274,7 @@ export default function StudentRegister() {
       });
       return;
     }
-    
+
     // All validation passed, show confirmation dialog
     setShowConfirmDialog(true);
   };
@@ -282,10 +282,10 @@ export default function StudentRegister() {
   const confirmAndSubmit = async () => {
     setShowConfirmDialog(false);
     setIsSubmitting(true);
-    
+
     try {
       let photoUrl = null;
-      
+
       if (photoFile) {
         const fileExt = photoFile.name.split('.').pop();
         const fileName = `${barcodeValue}-${Date.now()}.${fileExt}`;
@@ -308,7 +308,7 @@ export default function StudentRegister() {
           photoUrl = publicUrl;
         }
       }
-      
+
       let newStudent;
       let studentError;
 
@@ -325,7 +325,7 @@ export default function StudentRegister() {
           allergies_details: hasAllergies ? allergyDetails : null,
           address: address || null,
         };
-        
+
         // Only update photo if new one was uploaded
         if (photoUrl) {
           updateData.photo_url = photoUrl;
@@ -337,7 +337,7 @@ export default function StudentRegister() {
           .eq('id', editStudent.id)
           .select()
           .single();
-        
+
         newStudent = result.data;
         studentError = result.error;
       } else {
@@ -361,7 +361,7 @@ export default function StudentRegister() {
           } as any)
           .select()
           .single();
-        
+
         console.log('Insert result:', { data: result.data, error: result.error });
         newStudent = result.data;
         studentError = result.error;
@@ -479,8 +479,8 @@ export default function StudentRegister() {
             .order('stop_order', { ascending: false })
             .limit(1);
 
-          const nextOrder = stopsForRoute && stopsForRoute.length > 0 
-            ? stopsForRoute[0].stop_order + 1 
+          const nextOrder = stopsForRoute && stopsForRoute.length > 0
+            ? stopsForRoute[0].stop_order + 1
             : 1;
 
           const { data: newStop, error: stopError } = await supabase
@@ -537,17 +537,17 @@ export default function StudentRegister() {
           console.log('Bus assignment created successfully:', assignmentData);
         }
       }
-      
+
       console.log('Student registration completed successfully!', {
         studentId: newStudent.id,
         fullName: newStudent.full_name
       });
-      
+
       toast({
         title: editStudent ? "Student Updated Successfully" : "Student Registered Successfully",
         description: "The student information has been saved to the system.",
       });
-      
+
       console.log('=== NAVIGATING TO /students ===');
       setIsSubmitting(false);
       navigate("/students");
@@ -595,7 +595,7 @@ export default function StudentRegister() {
           </Button>
         </div>
       </div>
-      
+
       <form onSubmit={handleSubmit}>
         <div className="grid gap-6 md:grid-cols-2">
           <div className="space-y-6">
@@ -606,7 +606,7 @@ export default function StudentRegister() {
               </CardHeader>
               <CardContent>
                 <div className="flex items-center gap-4">
-                  <div className="w-32 h-32 border-2 border-dashed border-border rounded-lg flex items-center justify-center overflow-hidden bg-muted">
+                  <div className="w-32 h-32 border-2 border-dashed border-apple-gray-200 rounded-full flex items-center justify-center overflow-hidden bg-apple-gray-50">
                     {photoPreview ? (
                       <img src={photoPreview} alt="Student preview" className="w-full h-full object-cover" />
                     ) : (
@@ -629,7 +629,7 @@ export default function StudentRegister() {
                 </div>
               </CardContent>
             </Card>
-            
+
             <Card>
               <CardHeader>
                 <CardTitle>Student Information</CardTitle>
@@ -644,10 +644,10 @@ export default function StudentRegister() {
                       Student ID
                     </Label>
                     <div className="col-span-3 flex gap-2">
-                      <Input id="studentId" value={barcodeValue} readOnly className="bg-muted" />
-                      <Button 
-                        type="button" 
-                        variant="outline" 
+                      <Input id="studentId" value={barcodeValue} readOnly className="bg-apple-gray-50 font-mono text-apple-gray-600" />
+                      <Button
+                        type="button"
+                        variant="outline"
                         onClick={generateNewBarcode}
                         disabled={!!editStudent}
                       >
@@ -655,42 +655,42 @@ export default function StudentRegister() {
                       </Button>
                     </div>
                   </div>
-                  
+
                   <div className="grid grid-cols-4 items-center gap-4">
                     <Label htmlFor="firstName" className="text-right">
                       First Name
                     </Label>
-                    <Input 
-                      id="firstName" 
-                      className="col-span-3" 
-                      required 
+                    <Input
+                      id="firstName"
+                      className="col-span-3"
+                      required
                       value={firstName}
                       onChange={(e) => setFirstName(e.target.value)}
                     />
                   </div>
-                  
+
                   <div className="grid grid-cols-4 items-center gap-4">
                     <Label htmlFor="lastName" className="text-right">
                       Last Name
                     </Label>
-                    <Input 
-                      id="lastName" 
-                      className="col-span-3" 
-                      required 
+                    <Input
+                      id="lastName"
+                      className="col-span-3"
+                      required
                       value={lastName}
                       onChange={(e) => setLastName(e.target.value)}
                     />
                   </div>
-                  
+
                   <div className="grid grid-cols-4 items-center gap-4">
                     <Label htmlFor="dob" className="text-right">
                       Date of Birth
                     </Label>
                     <div className="col-span-3 space-y-2">
-                      <Input 
-                        id="dob" 
-                        type="date" 
-                        required 
+                      <Input
+                        id="dob"
+                        type="date"
+                        required
                         value={dateOfBirth}
                         onChange={(e) => setDateOfBirth(e.target.value)}
                         max={new Date().toISOString().split('T')[0]}
@@ -702,12 +702,12 @@ export default function StudentRegister() {
                       )}
                     </div>
                   </div>
-                  
+
                   <div className="grid grid-cols-4 items-center gap-4">
                     <Label className="text-right">Gender</Label>
-                    <RadioGroup 
-                      value={gender} 
-                      onValueChange={setGender} 
+                    <RadioGroup
+                      value={gender}
+                      onValueChange={setGender}
                       className="col-span-3 flex space-x-4"
                     >
                       <div className="flex items-center space-x-2">
@@ -724,7 +724,7 @@ export default function StudentRegister() {
                       </div>
                     </RadioGroup>
                   </div>
-                  
+
                   <div className="grid grid-cols-4 items-center gap-4">
                     <Label htmlFor="bloodType" className="text-right">
                       Blood Type
@@ -745,7 +745,7 @@ export default function StudentRegister() {
                       </SelectContent>
                     </Select>
                   </div>
-                  
+
                   <div className="grid grid-cols-4 items-center gap-4">
                     <Label htmlFor="grade" className="text-right">
                       Grade
@@ -761,7 +761,7 @@ export default function StudentRegister() {
                       </SelectContent>
                     </Select>
                   </div>
-                  
+
                   <div className="grid grid-cols-4 items-center gap-4">
                     <Label htmlFor="section" className="text-right">
                       Section
@@ -779,7 +779,7 @@ export default function StudentRegister() {
                   </div>
 
                   {matchingClass && (
-                    <div className="grid grid-cols-4 items-center gap-4 bg-muted/50 p-3 rounded-lg">
+                    <div className="grid grid-cols-4 items-center gap-4 bg-apple-gray-50 p-4 rounded-xl border border-apple-gray-100">
                       <Label htmlFor="autoEnroll" className="text-right">
                         Auto-Enroll
                       </Label>
@@ -797,15 +797,15 @@ export default function StudentRegister() {
                       </div>
                     </div>
                   )}
-                  
+
                   <div className="grid grid-cols-4 items-center gap-4">
                     <Label htmlFor="address" className="text-right">
                       Home Address {requiresBus && <span className="text-destructive">*</span>}
                     </Label>
-                    <Textarea 
-                      id="address" 
-                      placeholder="123 Main Street, City, State" 
-                      className="col-span-3" 
+                    <Textarea
+                      id="address"
+                      placeholder="123 Main Street, City, State"
+                      className="col-span-3"
                       value={address}
                       onChange={(e) => setAddress(e.target.value)}
                       required={requiresBus}
@@ -816,7 +816,7 @@ export default function StudentRegister() {
                       </p>
                     )}
                   </div>
-                  
+
                   <div className="grid grid-cols-4 items-center gap-4">
                     <Label className="text-right">Has Allergies</Label>
                     <div className="col-span-3 flex items-center space-x-2">
@@ -829,22 +829,22 @@ export default function StudentRegister() {
                       </Label>
                     </div>
                   </div>
-                  
+
                   {hasAllergies && (
                     <div className="grid grid-cols-4 items-center gap-4">
                       <Label htmlFor="allergies" className="text-right">
                         Allergy Details
                       </Label>
-                      <Textarea 
-                        id="allergies" 
-                        placeholder="Describe the allergies..." 
-                        className="col-span-3" 
+                      <Textarea
+                        id="allergies"
+                        placeholder="Describe the allergies..."
+                        className="col-span-3"
                         value={allergyDetails}
                         onChange={(e) => setAllergyDetails(e.target.value)}
                       />
                     </div>
                   )}
-                  
+
                   <div className="grid grid-cols-4 items-center gap-4">
                     <Label className="text-right">Requires Bus</Label>
                     <div className="col-span-3 flex items-center space-x-2">
@@ -857,7 +857,7 @@ export default function StudentRegister() {
                       </Label>
                     </div>
                   </div>
-                  
+
                   {requiresBus && (
                     <div className="grid grid-cols-4 items-center gap-4">
                       <Label htmlFor="busRoute" className="text-right">
@@ -884,7 +884,7 @@ export default function StudentRegister() {
                 </div>
               </CardContent>
             </Card>
-            
+
             <Card>
               <CardHeader>
                 <CardTitle>Guardian Information</CardTitle>
@@ -910,28 +910,28 @@ export default function StudentRegister() {
                       </SelectContent>
                     </Select>
                   </div>
-                  
+
                   <div className="grid grid-cols-4 items-center gap-4">
                     <Label htmlFor="guardianName" className="text-right">
                       Full Name
                     </Label>
-                    <Input 
-                      id="guardianName" 
-                      className="col-span-3" 
+                    <Input
+                      id="guardianName"
+                      className="col-span-3"
                       placeholder="Guardian's full name"
                       value={guardianName}
                       onChange={(e) => setGuardianName(e.target.value)}
                     />
                   </div>
-                  
+
                   <div className="grid grid-cols-4 items-center gap-4">
                     <Label htmlFor="guardianEmail" className="text-right">
                       Email <span className="text-destructive">*</span>
                     </Label>
-                    <Input 
-                      id="guardianEmail" 
-                      type="email" 
-                      className="col-span-3" 
+                    <Input
+                      id="guardianEmail"
+                      type="email"
+                      className="col-span-3"
                       placeholder="guardian@example.com"
                       value={guardianEmail}
                       onChange={(e) => setGuardianEmail(e.target.value)}
@@ -941,15 +941,15 @@ export default function StudentRegister() {
                       Used for parent portal login
                     </p>
                   </div>
-                  
+
                   <div className="grid grid-cols-4 items-center gap-4">
                     <Label htmlFor="guardianPhone" className="text-right">
                       Phone <span className="text-destructive">*</span>
                     </Label>
-                    <Input 
-                      id="guardianPhone" 
-                      type="tel" 
-                      className="col-span-3" 
+                    <Input
+                      id="guardianPhone"
+                      type="tel"
+                      className="col-span-3"
                       placeholder="+1 (555) 000-0000"
                       value={guardianPhone}
                       onChange={(e) => setGuardianPhone(e.target.value)}
@@ -972,7 +972,7 @@ export default function StudentRegister() {
               </CardFooter>
             </Card>
           </div>
-          
+
           <Card>
             <CardHeader>
               <CardTitle>Student ID Card Preview</CardTitle>
@@ -986,7 +986,7 @@ export default function StudentRegister() {
                   <h3 className="font-bold">SCHOOL SCAN CONNECT</h3>
                   <p className="text-xs">STUDENT IDENTIFICATION</p>
                 </div>
-                
+
                 <div className="flex flex-col items-center mb-4">
                   <div className="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center mb-2 overflow-hidden">
                     {photoPreview ? (
@@ -998,7 +998,7 @@ export default function StudentRegister() {
                   <h4 className="font-bold">{firstName ? `${firstName} ${lastName}` : "New Student"}</h4>
                   <p className="text-sm text-gray-600">ID: {barcodeValue}</p>
                 </div>
-                
+
                 <div className="space-y-2 mb-4">
                   <div className="grid grid-cols-3 text-sm">
                     <span className="font-medium">Grade:</span>
@@ -1021,7 +1021,7 @@ export default function StudentRegister() {
                     </div>
                   )}
                 </div>
-                
+
                 <div className="border border-dashed border-gray-300 p-3 flex justify-center">
                   <QrCode className="h-24 w-24 text-school-primary" />
                 </div>

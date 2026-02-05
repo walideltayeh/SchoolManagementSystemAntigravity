@@ -87,7 +87,7 @@ export default function BusAttendance() {
             {busRoutes.map((bus) => (
               <Card
                 key={bus.id}
-                className="cursor-pointer hover:border-primary transition-colors"
+                className="cursor-pointer transition-all hover:shadow-md border-apple-gray-100 hover:border-apple-blue group"
                 onClick={() => handleBusSelect(bus.id)}
               >
                 <CardHeader>
@@ -135,19 +135,19 @@ export default function BusAttendance() {
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="flex gap-3">
-              <Badge className="h-6 w-6 rounded-full flex items-center justify-center">1</Badge>
+              <Badge className="h-6 w-6 rounded-full flex items-center justify-center bg-apple-blue text-white hover:bg-apple-blue">1</Badge>
               <p className="text-sm">Select the bus route from the list above</p>
             </div>
             <div className="flex gap-3">
-              <Badge className="h-6 w-6 rounded-full flex items-center justify-center">2</Badge>
+              <Badge className="h-6 w-6 rounded-full flex items-center justify-center bg-apple-blue text-white hover:bg-apple-blue">2</Badge>
               <p className="text-sm">Driver will log in to the bus device</p>
             </div>
             <div className="flex gap-3">
-              <Badge className="h-6 w-6 rounded-full flex items-center justify-center">3</Badge>
+              <Badge className="h-6 w-6 rounded-full flex items-center justify-center bg-apple-blue text-white hover:bg-apple-blue">3</Badge>
               <p className="text-sm">Students scan their QR codes when boarding the bus</p>
             </div>
             <div className="flex gap-3">
-              <Badge className="h-6 w-6 rounded-full flex items-center justify-center">4</Badge>
+              <Badge className="h-6 w-6 rounded-full flex items-center justify-center bg-apple-blue text-white hover:bg-apple-blue">4</Badge>
               <p className="text-sm">Attendance is automatically recorded in the system</p>
             </div>
           </CardContent>

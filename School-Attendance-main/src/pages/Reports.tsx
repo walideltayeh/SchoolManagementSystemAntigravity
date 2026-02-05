@@ -81,7 +81,8 @@ export default function Reports() {
   const [pieChartData, setPieChartData] = useState<{ name: string; value: number }[]>([]);
 
   // Colors for the pie chart
-  const COLORS = ['#4CAF50', '#F44336', '#FFC107'];
+  // Apple Chart Colors: Green, Red, Yellow
+  const COLORS = ['#34C759', '#FF3B30', '#FFCC00'];
 
   useEffect(() => {
     // Get attendance data
@@ -288,8 +289,8 @@ export default function Reports() {
               <div className="rounded-lg border p-4 space-y-3">
                 <div className="flex items-center justify-between">
                   <div className="text-muted-foreground text-sm">Present Students</div>
-                  <div className="h-8 w-8 rounded-full bg-green-100 flex items-center justify-center">
-                    <CheckCircle className="h-5 w-5 text-green-600" />
+                  <div className="h-10 w-10 rounded-full bg-green-50 flex items-center justify-center">
+                    <CheckCircle className="h-6 w-6 text-apple-green" />
                   </div>
                 </div>
                 <div className="text-3xl font-bold">{attendanceOverview.present}</div>
@@ -305,8 +306,8 @@ export default function Reports() {
               <div className="rounded-lg border p-4 space-y-3">
                 <div className="flex items-center justify-between">
                   <div className="text-muted-foreground text-sm">Absent Students</div>
-                  <div className="h-8 w-8 rounded-full bg-red-100 flex items-center justify-center">
-                    <XCircle className="h-5 w-5 text-red-600" />
+                  <div className="h-10 w-10 rounded-full bg-red-50 flex items-center justify-center">
+                    <XCircle className="h-6 w-6 text-apple-red" />
                   </div>
                 </div>
                 <div className="text-3xl font-bold">{attendanceOverview.absent}</div>
@@ -317,8 +318,8 @@ export default function Reports() {
               <div className="rounded-lg border p-4 space-y-3">
                 <div className="flex items-center justify-between">
                   <div className="text-muted-foreground text-sm">Total Enrollment</div>
-                  <div className="h-8 w-8 rounded-full bg-school-light flex items-center justify-center">
-                    <UserCheck className="h-5 w-5 text-school-primary" />
+                  <div className="h-10 w-10 rounded-full bg-blue-50 flex items-center justify-center">
+                    <UserCheck className="h-6 w-6 text-apple-blue" />
                   </div>
                 </div>
                 <div className="text-3xl font-bold">{attendanceOverview.total}</div>
@@ -326,7 +327,7 @@ export default function Reports() {
                 <div className="text-sm font-medium">
                   <div className="h-2 bg-gray-200 rounded-full mt-1 mb-1">
                     <div
-                      className="h-2 bg-school-primary rounded-full"
+                      className="h-2 bg-apple-blue rounded-full"
                       style={{ width: `${attendanceOverview.presentPercent}%` }}
                     ></div>
                   </div>
@@ -515,8 +516,8 @@ export default function Reports() {
                     <div key={item.time} className="flex flex-col items-center">
                       <div
                         className={`w-7 rounded-t ${item.time.includes("8:00 AM") || item.time.includes("3:00 PM")
-                          ? "bg-school-primary"
-                          : "bg-school-light"
+                          ? "bg-apple-blue"
+                          : "bg-apple-gray-200"
                           }`}
                         style={{ height: `${heightPercent}%` }}
                       ></div>

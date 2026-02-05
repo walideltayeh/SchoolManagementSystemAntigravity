@@ -4,12 +4,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Calendar, Clock, MapPin, User, Bus, School, AlertCircle, CheckCircle2, XCircle, MinusCircle, TrendingUp, Users } from "lucide-react";
+import { Calendar, Clock, MapPin, User, Bus, School, AlertCircle, CheckCircle2, XCircle, MinusCircle, TrendingUp, Users, Home } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import BusMap from "@/components/parent/BusMap";
 import { format, startOfWeek, endOfWeek, startOfMonth, endOfMonth, eachDayOfInterval, isToday, isSameDay } from "date-fns";
 import { LogOut } from "lucide-react";
+import { Link } from "react-router-dom";
 import {
   Select,
   SelectContent,
@@ -474,7 +475,7 @@ export default function ParentPortal() {
   }).filter(d => d.getDay() !== 0 && d.getDay() !== 6);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-muted/20 p-4 md:p-8">
+    <div className="min-h-screen bg-apple-gray-50 p-4 md:p-8">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header with Logout */}
         <div className="flex justify-between items-center">
@@ -482,20 +483,28 @@ export default function ParentPortal() {
             <h1 className="text-2xl font-bold">Parent Portal</h1>
             <p className="text-muted-foreground">{guardianEmail}</p>
           </div>
-          <Button variant="outline" size="sm" onClick={handleLogout}>
-            <LogOut className="h-4 w-4 mr-2" />
-            Logout
-          </Button>
+          <div className="flex items-center gap-3">
+            <Link to="/">
+              <Button variant="outline" size="sm">
+                <Home className="h-4 w-4 mr-2" />
+                Home
+              </Button>
+            </Link>
+            <Button variant="outline" size="sm" onClick={handleLogout}>
+              <LogOut className="h-4 w-4 mr-2" />
+              Logout
+            </Button>
+          </div>
         </div>
 
         {/* Main Content Tabs */}
         <Tabs defaultValue="dashboard" className="w-full">
-          <TabsList className="grid w-full grid-cols-5">
-            <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
-            <TabsTrigger value="schedule">Schedule</TabsTrigger>
-            <TabsTrigger value="attendance">Attendance</TabsTrigger>
-            <TabsTrigger value="bus">Bus Info</TabsTrigger>
-            <TabsTrigger value="map">Bus Tracking</TabsTrigger>
+          <TabsList className="mb-8 w-full justify-start h-auto p-1 bg-white/50 backdrop-blur-sm rounded-full border border-apple-gray-200 inline-flex gap-1">
+            <TabsTrigger value="dashboard" className="rounded-full px-4 py-2 data-[state=active]:bg-apple-blue data-[state=active]:text-white data-[state=active]:shadow-sm transition-all hover:bg-apple-gray-100">Dashboard</TabsTrigger>
+            <TabsTrigger value="schedule" className="rounded-full px-4 py-2 data-[state=active]:bg-apple-blue data-[state=active]:text-white data-[state=active]:shadow-sm transition-all hover:bg-apple-gray-100">Schedule</TabsTrigger>
+            <TabsTrigger value="attendance" className="rounded-full px-4 py-2 data-[state=active]:bg-apple-blue data-[state=active]:text-white data-[state=active]:shadow-sm transition-all hover:bg-apple-gray-100">Attendance</TabsTrigger>
+            <TabsTrigger value="bus" className="rounded-full px-4 py-2 data-[state=active]:bg-apple-blue data-[state=active]:text-white data-[state=active]:shadow-sm transition-all hover:bg-apple-gray-100">Bus Info</TabsTrigger>
+            <TabsTrigger value="map" className="rounded-full px-4 py-2 data-[state=active]:bg-apple-blue data-[state=active]:text-white data-[state=active]:shadow-sm transition-all hover:bg-apple-gray-100">Bus Tracking</TabsTrigger>
           </TabsList>
 
           {/* NEW: Family Dashboard Tab */}
@@ -532,7 +541,7 @@ export default function ParentPortal() {
                 </CardHeader>
                 <CardContent>
                   <div className="text-3xl font-bold">{getOverallFamilyRate()}%</div>
-                  <div className="mt-2 h-2 w-full bg-muted rounded-full overflow-hidden">
+                  <div className="mt-2 h-2 w-full bg-apple-gray-100 rounded-full overflow-hidden">
                     <div
                       className={`h-full ${getAttendanceColor(getOverallFamilyRate())} transition-all`}
                       style={{ width: `${getOverallFamilyRate()}%` }}
@@ -588,17 +597,17 @@ export default function ParentPortal() {
             </div>
 
             {/* Children Cards */}
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {childrenStats.map((child) => (
                 <Card
                   key={child.student.id}
-                  className={`cursor-pointer transition-all hover:shadow-lg ${selectedStudentId === child.student.id ? 'ring-2 ring-primary' : ''
+                  className={`cursor-pointer transition-all hover:shadow-md border-none shadow-sm ${selectedStudentId === child.student.id ? 'ring-2 ring-apple-blue bg-white' : 'bg-white'
                     }`}
                   onClick={() => setSelectedStudentId(child.student.id)}
                 >
                   <CardContent className="pt-6">
                     <div className="flex items-start gap-4">
-                      <div className="w-14 h-14 rounded-full overflow-hidden bg-muted flex items-center justify-center flex-shrink-0">
+                      <div className="w-14 h-14 rounded-full overflow-hidden bg-apple-gray-50 flex items-center justify-center flex-shrink-0 border border-apple-gray-100">
                         {child.student.photo_url ? (
                           <img src={child.student.photo_url} alt={child.student.full_name} className="w-full h-full object-cover" />
                         ) : (
