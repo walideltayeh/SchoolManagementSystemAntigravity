@@ -22,6 +22,7 @@ import BusLogin from "@/pages/BusLogin";
 import ParentPortal from "@/pages/ParentPortal";
 import ParentLogin from "@/pages/ParentLogin";
 import Landing from "@/pages/Landing";
+import HowItWorks from "@/pages/HowItWorks";
 
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as SonnerToaster } from "@/components/ui/sonner";
@@ -38,6 +39,7 @@ function App() {
           <Route path="/" element={<Landing />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/parent-login" element={<ParentLogin />} />
+          <Route path="/how-it-works" element={<HowItWorks />} />
           <Route path="/classroom-login" element={<ClassroomLogin />} />
           <Route path="/classroom-login/:roomId" element={<ClassroomLogin />} />
           <Route path="/bus-login/:busId" element={<BusLogin />} />

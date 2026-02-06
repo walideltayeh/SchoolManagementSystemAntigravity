@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { QrCode, ShieldCheck, Zap, BarChart3, Users, Smartphone, Bell, CheckCircle2, Clock, Globe, ArrowUpRight } from "lucide-react";
+import { QrCode, Bell, BarChart3 } from "lucide-react";
 import {
     Dialog,
     DialogContent,
@@ -10,41 +10,46 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { toast } from "sonner";
 import { useSchoolConfig } from "@/hooks/useSchoolConfig";
 import { LiquidGlassButton } from "@/components/ui/LiquidGlassButton";
-import { useScrollAnimation } from "@/hooks/useScrollAnimation";
-import { CountUp } from "@/components/CountUp";
 import { cn } from "@/lib/utils";
 
-// Animated Section Wrapper
-function AnimatedSection({ children, className, delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
-    const { ref, isVisible } = useScrollAnimation();
-    return (
-        <section
-            ref={ref}
-            className={cn(
-                "transition-all duration-700 ease-out",
-                isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12",
-                className
-            )}
-            style={{ transitionDelay: `${delay}ms` }}
-        >
-            {children}
-        </section>
-    );
+// Scroll-triggered fade-in animation hook
+function useScrollFade() {
+    const ref = useRef<HTMLDivElement>(null);
+    const [isVisible, setIsVisible] = useState(false);
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (entry.isIntersecting) {
+                    setIsVisible(true);
+                }
+            },
+            { threshold: 0.1, rootMargin: "0px 0px -50px 0px" }
+        );
+
+        if (ref.current) {
+            observer.observe(ref.current);
+        }
+
+        return () => observer.disconnect();
+    }, []);
+
+    return { ref, isVisible };
 }
 
-// Animated Item for staggered animations
-function AnimatedItem({ children, className, delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
-    const { ref, isVisible } = useScrollAnimation();
+// Animated section component
+function FadeSection({ children, className, delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
+    const { ref, isVisible } = useScrollFade();
     return (
         <div
             ref={ref}
             className={cn(
-                "transition-all duration-500 ease-out",
-                isVisible ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-8 scale-95",
+                "transition-all duration-700 ease-out",
+                isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8",
                 className
             )}
             style={{ transitionDelay: `${delay}ms` }}
@@ -54,51 +59,23 @@ function AnimatedItem({ children, className, delay = 0 }: { children: React.Reac
     );
 }
 
+// Core features - simplified to 3
 const FEATURES = [
     {
         icon: QrCode,
-        title: "Instant QR Scanning",
-        description: "Students scan their unique QR code in under a second. No cards, no queues.",
+        title: "Instant Check-in",
+        description: "Students scan their QR code in under a second.",
     },
     {
         icon: Bell,
-        title: "Real-time Parent Alerts",
-        description: "Parents receive instant notifications when their child checks in or out.",
+        title: "Real-time Alerts",
+        description: "Parents know the moment their child arrives.",
     },
     {
         icon: BarChart3,
-        title: "Powerful Analytics",
-        description: "Comprehensive dashboards to track attendance patterns and trends.",
+        title: "Clear Insights",
+        description: "Track attendance patterns at a glance.",
     },
-    {
-        icon: ShieldCheck,
-        title: "Enterprise Security",
-        description: "Bank-grade encryption and full data privacy compliance.",
-    },
-    {
-        icon: Smartphone,
-        title: "Works Everywhere",
-        description: "Access from any device. No app installation needed.",
-    },
-    {
-        icon: Users,
-        title: "Easy Management",
-        description: "Manage students, teachers, and classes from one platform.",
-    },
-];
-
-const STATS = [
-    { value: 50, suffix: "+", label: "Schools" },
-    { value: 25, suffix: "K+", label: "Students" },
-    { value: 99.9, suffix: "%", label: "Uptime" },
-    { value: 1, prefix: "<", suffix: "s", label: "Scan Time" },
-];
-
-const STEPS = [
-    { icon: QrCode, title: "Scan", description: "Student scans their unique QR code at the entrance.", number: "01" },
-    { icon: CheckCircle2, title: "Record", description: "Attendance is instantly recorded with timestamp.", number: "02" },
-    { icon: Bell, title: "Notify", description: "Parents receive real-time alerts on their phone.", number: "03" },
-    { icon: BarChart3, title: "Analyze", description: "Admins view detailed reports and analytics.", number: "04" },
 ];
 
 export default function Landing() {
@@ -108,31 +85,27 @@ export default function Landing() {
     const handleDemoSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         setDemoOpen(false);
-        toast.success("Demo request sent! We'll contact you shortly.");
+        toast.success("We'll be in touch shortly.");
     };
 
     return (
-        <div className="min-h-screen w-full bg-black text-white font-sans antialiased overflow-x-hidden">
+        <div className="min-h-screen w-full bg-white text-[#1d1d1f] font-sans antialiased overflow-x-hidden">
 
-            {/* Pure black background with subtle grid */}
-            <div className="fixed inset-0 pointer-events-none overflow-hidden">
-                <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.015)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.015)_1px,transparent_1px)] bg-[size:64px_64px]" />
-            </div>
-
-            {/* Navbar */}
-            <nav className="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur-xl border-b border-white/5">
-                <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                        <span className="font-bold text-xl tracking-tight text-white">{schoolInfo.name}</span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                        <Link to="/auth">
-                            <LiquidGlassButton variant="secondary" className="h-10 px-6 text-sm">
-                                Admin
-                            </LiquidGlassButton>
+            {/* Navigation */}
+            <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xl border-b border-[#d2d2d7]/50">
+                <div className="max-w-5xl mx-auto px-6 h-12 flex items-center justify-between">
+                    <span className="font-semibold text-[#1d1d1f] tracking-tight">
+                        {schoolInfo.name}
+                    </span>
+                    <div className="flex items-center gap-6">
+                        <Link
+                            to="/auth"
+                            className="text-sm text-[#1d1d1f] hover:text-[#0071e3] transition-colors"
+                        >
+                            Admin
                         </Link>
                         <Link to="/parent-login">
-                            <LiquidGlassButton variant="primary" className="h-10 px-6 text-sm">
+                            <LiquidGlassButton variant="primary" size="sm">
                                 Parent Portal
                             </LiquidGlassButton>
                         </Link>
@@ -141,266 +114,204 @@ export default function Landing() {
             </nav>
 
             {/* Hero Section */}
-            <section className="relative pt-36 pb-24 md:pt-48 md:pb-32 flex flex-col items-center justify-center text-center px-6">
-                <div className="animate-fade-in-up">
-                    <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-red-500/10 border border-red-500/20 text-sm text-gray-300 mb-8 backdrop-blur-sm">
-                        <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-                        <span>Now with AI-powered insights</span>
-                        <ArrowUpRight className="w-4 h-4" />
-                    </div>
-
-                    <h1 className="text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold tracking-tight leading-[1.1] max-w-5xl">
-                        School Attendance
+            <section className="pt-32 pb-24 md:pt-44 md:pb-32 px-6">
+                <div className="max-w-4xl mx-auto text-center">
+                    <h1
+                        className="text-[48px] md:text-[64px] lg:text-[80px] font-semibold tracking-[-0.04em] leading-[1.05] text-[#1d1d1f] animate-fade-in"
+                        style={{ textWrap: "balance" } as React.CSSProperties}
+                    >
+                        School attendance.
                         <br />
-                        <span className="text-red-500">
-                            Reinvented.
-                        </span>
+                        <span className="text-[#86868b]">Simplified.</span>
                     </h1>
 
-                    <p className="mt-8 text-lg md:text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed">
-                        The modern way to track attendance. Seamless QR check-ins, instant parent alerts, and powerful analytics — all in one platform.
+                    <p className="mt-6 text-[19px] md:text-[21px] text-[#86868b] max-w-xl mx-auto leading-relaxed animate-fade-in animation-delay-100">
+                        QR check-ins. Instant parent alerts. Beautiful analytics.
+                        <br className="hidden md:block" />
+                        All in one platform.
                     </p>
-                </div>
 
-                <div className="mt-12 flex flex-col sm:flex-row items-center gap-4 animate-fade-in-up animation-delay-200">
-                    <Dialog open={demoOpen} onOpenChange={setDemoOpen}>
-                        <DialogTrigger asChild>
-                            <LiquidGlassButton variant="primary" size="lg">
-                                Book a Demo
-                            </LiquidGlassButton>
-                        </DialogTrigger>
-                        <DialogContent className="sm:max-w-md bg-black border border-white/10 shadow-2xl rounded-2xl p-6">
-                            <DialogHeader>
-                                <DialogTitle className="text-xl font-semibold text-white">Book a Demo</DialogTitle>
-                                <DialogDescription className="text-gray-400">
-                                    Schedule a personalized tour.
-                                </DialogDescription>
-                            </DialogHeader>
-                            <form onSubmit={handleDemoSubmit} className="space-y-4 mt-4">
-                                <div className="space-y-1.5">
-                                    <Label className="text-gray-300 font-medium text-sm">Email</Label>
-                                    <Input type="email" placeholder="principal@school.edu" required className="h-11 rounded-lg bg-white/5 border-white/10 text-white placeholder:text-gray-500" />
-                                </div>
-                                <div className="space-y-1.5">
-                                    <Label className="text-gray-300 font-medium text-sm">School Name</Label>
-                                    <Input placeholder="Greenwood High" required className="h-11 rounded-lg bg-white/5 border-white/10 text-white placeholder:text-gray-500" />
-                                </div>
-                                <div className="flex justify-end gap-3 pt-2">
-                                    <LiquidGlassButton type="button" variant="secondary" onClick={() => setDemoOpen(false)} className="h-10 px-5">Cancel</LiquidGlassButton>
-                                    <LiquidGlassButton type="submit" variant="primary" className="h-10 px-5">Submit</LiquidGlassButton>
-                                </div>
-                            </form>
-                        </DialogContent>
-                    </Dialog>
-
-                    <Link to="/parent-login">
-                        <LiquidGlassButton variant="secondary" size="lg">
-                            Try Parent Portal
-                        </LiquidGlassButton>
-                    </Link>
-                </div>
-
-                {/* Floating badges */}
-                <div className="mt-16 flex flex-wrap justify-center gap-4 animate-fade-in-up animation-delay-300">
-                    {["Lightning Fast", "Secure", "Mobile Ready", "Cloud Based"].map((badge, i) => (
-                        <div key={i} className="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm text-gray-400 backdrop-blur-sm">
-                            {badge}
-                        </div>
-                    ))}
-                </div>
-            </section>
-
-            {/* Stats Section with Animated Counters */}
-            <AnimatedSection className="py-20 border-y border-white/5">
-                <div className="max-w-5xl mx-auto px-6">
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-                        {STATS.map((stat, i) => (
-                            <div key={i} className="text-center p-6 rounded-2xl bg-white/[0.02] border border-white/5 hover:border-red-500/30 transition-colors">
-                                <div className="text-4xl md:text-5xl font-bold text-red-500">
-                                    <CountUp
-                                        end={stat.value}
-                                        prefix={stat.prefix || ""}
-                                        suffix={stat.suffix || ""}
-                                        duration={2000}
-                                    />
-                                </div>
-                                <div className="text-sm text-gray-500 mt-2 font-medium">{stat.label}</div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </AnimatedSection>
-
-            {/* How It Works Section */}
-            <section className="py-24 md:py-32 px-6">
-                <div className="max-w-5xl mx-auto">
-                    <AnimatedSection className="text-center mb-20">
-                        <span className="text-red-500 font-semibold text-sm uppercase tracking-wider">Process</span>
-                        <h2 className="text-4xl md:text-5xl font-bold text-white tracking-tight mt-4 mb-6">
-                            How It Works
-                        </h2>
-                        <p className="text-gray-400 max-w-lg mx-auto text-lg">
-                            A simple four-step process that takes less than a second.
-                        </p>
-                    </AnimatedSection>
-
-                    <div className="relative">
-                        {/* Connecting line for desktop - centered on circles */}
-                        <div className="hidden lg:block absolute top-10 left-[12%] right-[12%] h-[2px] bg-red-500/30 z-0">
-                            <div className="absolute inset-0 bg-red-500 animate-pulse opacity-30" />
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                            {STEPS.map((step, i) => (
-                                <AnimatedItem key={i} delay={i * 300}>
-                                    <div className="relative flex flex-col items-center text-center">
-                                        {/* Step number circle */}
-                                        <div className="relative z-10 w-20 h-20 rounded-full bg-black border-2 border-red-500/30 flex items-center justify-center mb-6 group hover:border-red-500 transition-colors">
-                                            <span className="text-2xl font-bold text-red-500">
-                                                {step.number}
-                                            </span>
-                                            {/* Pulse ring animation */}
-                                            <div
-                                                className="absolute inset-0 rounded-full border-2 border-red-500/30 animate-ping"
-                                                style={{ animationDelay: `${i * 0.5}s`, animationDuration: '2s' }}
-                                            />
-                                        </div>
-
-                                        {/* Icon */}
-                                        <div className="w-14 h-14 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center justify-center mb-4 hover:scale-110 transition-transform duration-300">
-                                            <step.icon className="w-7 h-7 text-red-500" />
-                                        </div>
-
-                                        {/* Content */}
-                                        <h3 className="font-bold text-white text-xl mb-3">{step.title}</h3>
-                                        <p className="text-gray-500 text-sm leading-relaxed max-w-[200px]">{step.description}</p>
-
-                                        {/* Arrow for mobile */}
-                                        {i < STEPS.length - 1 && (
-                                            <div className="mt-6 lg:hidden">
-                                                <div className="w-px h-8 bg-red-500/30 mx-auto" />
-                                                <div className="w-0 h-0 border-l-[6px] border-r-[6px] border-t-[8px] border-l-transparent border-r-transparent border-t-red-500/50 mx-auto" />
-                                            </div>
-                                        )}
-                                    </div>
-                                </AnimatedItem>
-                            ))}
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            {/* Features Section */}
-            <AnimatedSection className="py-24 md:py-32 px-6 bg-white/[0.01]">
-                <div className="max-w-5xl mx-auto">
-                    <div className="text-center mb-20">
-                        <span className="text-red-500 font-semibold text-sm uppercase tracking-wider">Features</span>
-                        <h2 className="text-4xl md:text-5xl font-bold text-white tracking-tight mt-4 mb-6">
-                            Everything You Need
-                        </h2>
-                        <p className="text-gray-400 max-w-lg mx-auto text-lg">
-                            A complete solution designed for modern schools.
-                        </p>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {FEATURES.map((feature, i) => (
-                            <AnimatedItem key={i} delay={i * 100}>
-                                <div className="group p-6 rounded-2xl bg-white/[0.02] border border-white/5 hover:border-red-500/30 transition-all duration-300 h-full">
-                                    <div className="w-14 h-14 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300">
-                                        <feature.icon className="w-7 h-7 text-red-500" />
-                                    </div>
-                                    <h3 className="font-bold text-white text-xl mb-3">{feature.title}</h3>
-                                    <p className="text-gray-500 text-sm leading-relaxed">{feature.description}</p>
-                                </div>
-                            </AnimatedItem>
-                        ))}
-                    </div>
-                </div>
-            </AnimatedSection>
-
-            {/* Benefits Section */}
-            <AnimatedSection className="py-24 md:py-32 px-6">
-                <div className="max-w-4xl mx-auto">
-                    <div className="text-center mb-16">
-                        <span className="text-red-500 font-semibold text-sm uppercase tracking-wider">Benefits</span>
-                        <h2 className="text-4xl md:text-5xl font-bold text-white tracking-tight mt-4 mb-6">
-                            Why Schools Love Us
-                        </h2>
-                    </div>
-
-                    <div className="space-y-6">
-                        <AnimatedItem delay={0}>
-                            <div className="flex items-start gap-6 p-6 rounded-2xl bg-white/[0.02] border border-white/5 hover:border-red-500/30 transition-colors">
-                                <div className="w-14 h-14 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center justify-center flex-shrink-0">
-                                    <Clock className="w-7 h-7 text-red-500" />
-                                </div>
-                                <div>
-                                    <h4 className="font-bold text-white text-xl mb-2">Save Hours Every Week</h4>
-                                    <p className="text-gray-500 leading-relaxed">Eliminate manual attendance taking completely. Teachers can focus on what matters most — teaching.</p>
-                                </div>
-                            </div>
-                        </AnimatedItem>
-                        <AnimatedItem delay={150}>
-                            <div className="flex items-start gap-6 p-6 rounded-2xl bg-white/[0.02] border border-white/5 hover:border-red-500/30 transition-colors">
-                                <div className="w-14 h-14 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center justify-center flex-shrink-0">
-                                    <Globe className="w-7 h-7 text-red-500" />
-                                </div>
-                                <div>
-                                    <h4 className="font-bold text-white text-xl mb-2">Access Anywhere</h4>
-                                    <p className="text-gray-500 leading-relaxed">Cloud-based platform accessible from any device, anywhere in the world. No installation required.</p>
-                                </div>
-                            </div>
-                        </AnimatedItem>
-                        <AnimatedItem delay={300}>
-                            <div className="flex items-start gap-6 p-6 rounded-2xl bg-white/[0.02] border border-white/5 hover:border-red-500/30 transition-colors">
-                                <div className="w-14 h-14 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center justify-center flex-shrink-0">
-                                    <Zap className="w-7 h-7 text-red-500" />
-                                </div>
-                                <div>
-                                    <h4 className="font-bold text-white text-xl mb-2">Instant Setup</h4>
-                                    <p className="text-gray-500 leading-relaxed">Get started in minutes, not weeks. No complex installation or lengthy training sessions needed.</p>
-                                </div>
-                            </div>
-                        </AnimatedItem>
-                    </div>
-                </div>
-            </AnimatedSection>
-
-            {/* CTA Section */}
-            <AnimatedSection className="py-24 md:py-32 px-6 text-center">
-                <div className="max-w-3xl mx-auto">
-                    <div className="p-12 rounded-3xl bg-white/[0.02] border border-white/10">
-                        <h2 className="text-4xl md:text-5xl font-bold text-white tracking-tight mb-6">
-                            Ready to Transform Attendance?
-                        </h2>
-                        <p className="text-gray-400 mb-10 text-lg max-w-xl mx-auto">
-                            Join the schools already using our platform to save time and keep parents informed.
-                        </p>
+                    <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in animation-delay-200">
                         <Dialog open={demoOpen} onOpenChange={setDemoOpen}>
                             <DialogTrigger asChild>
                                 <LiquidGlassButton variant="primary" size="lg">
-                                    Get Started Today
+                                    Get started
                                 </LiquidGlassButton>
                             </DialogTrigger>
+                            <DialogContent className="sm:max-w-md bg-white border border-[#d2d2d7] shadow-2xl rounded-2xl p-8">
+                                <DialogHeader>
+                                    <DialogTitle className="text-2xl font-semibold text-[#1d1d1f]">
+                                        Get started
+                                    </DialogTitle>
+                                    <DialogDescription className="text-[#86868b] mt-1">
+                                        We'll reach out to schedule a demo.
+                                    </DialogDescription>
+                                </DialogHeader>
+                                <form onSubmit={handleDemoSubmit} className="space-y-5 mt-6">
+                                    <div className="space-y-2">
+                                        <Label className="text-[#1d1d1f] font-medium text-sm">Email</Label>
+                                        <Input
+                                            type="email"
+                                            placeholder="you@school.edu"
+                                            required
+                                            className="h-12 rounded-xl bg-[#f5f5f7] border-transparent text-[#1d1d1f] placeholder:text-[#86868b] focus:border-[#0071e3] focus:ring-2 focus:ring-[#0071e3]/20"
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label className="text-[#1d1d1f] font-medium text-sm">School Name</Label>
+                                        <Input
+                                            placeholder="Your School"
+                                            required
+                                            className="h-12 rounded-xl bg-[#f5f5f7] border-transparent text-[#1d1d1f] placeholder:text-[#86868b] focus:border-[#0071e3] focus:ring-2 focus:ring-[#0071e3]/20"
+                                        />
+                                    </div>
+                                    <div className="flex gap-3 pt-2">
+                                        <LiquidGlassButton
+                                            type="button"
+                                            variant="light-secondary"
+                                            onClick={() => setDemoOpen(false)}
+                                            className="flex-1"
+                                        >
+                                            Cancel
+                                        </LiquidGlassButton>
+                                        <LiquidGlassButton
+                                            type="submit"
+                                            variant="primary"
+                                            className="flex-1"
+                                        >
+                                            Submit
+                                        </LiquidGlassButton>
+                                    </div>
+                                </form>
+                            </DialogContent>
                         </Dialog>
+
+                        <Link to="/how-it-works">
+                            <LiquidGlassButton variant="light-secondary" size="lg">
+                                See how it works
+                            </LiquidGlassButton>
+                        </Link>
                     </div>
                 </div>
-            </AnimatedSection>
+            </section >
+
+            {/* Divider */}
+            < div className="max-w-5xl mx-auto px-6" >
+                <div className="h-px bg-gradient-to-r from-transparent via-[#d2d2d7] to-transparent" />
+            </div >
+
+            {/* Features Section */}
+            < section className="py-24 md:py-32 px-6" >
+                <div className="max-w-4xl mx-auto">
+                    <FadeSection className="text-center mb-16">
+                        <h2 className="text-[40px] md:text-[48px] font-semibold tracking-[-0.03em] text-[#1d1d1f]">
+                            Everything you need.
+                        </h2>
+                        <p className="mt-4 text-[19px] text-[#86868b]">
+                            Nothing you don't.
+                        </p>
+                    </FadeSection>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        {FEATURES.map((feature, i) => (
+                            <FadeSection key={i} delay={i * 100}>
+                                <div className="text-center p-8 rounded-2xl bg-[#f5f5f7] hover:bg-[#e8e8ed] transition-colors duration-300">
+                                    <div className="w-14 h-14 mx-auto mb-6 rounded-2xl bg-white flex items-center justify-center shadow-sm">
+                                        <feature.icon className="w-7 h-7 text-[#0071e3]" />
+                                    </div>
+                                    <h3 className="font-semibold text-xl text-[#1d1d1f] mb-2">
+                                        {feature.title}
+                                    </h3>
+                                    <p className="text-[#86868b] text-base leading-relaxed">
+                                        {feature.description}
+                                    </p>
+                                </div>
+                            </FadeSection>
+                        ))}
+                    </div>
+                </div>
+            </section >
+
+            {/* Value Proposition Section */}
+            < section className="py-24 md:py-32 px-6 bg-[#f5f5f7]" >
+                <div className="max-w-3xl mx-auto text-center">
+                    <FadeSection>
+                        <h2 className="text-[40px] md:text-[48px] font-semibold tracking-[-0.03em] text-[#1d1d1f] leading-tight">
+                            Save hours every week.
+                            <br />
+                            <span className="text-[#86868b]">Keep everyone informed.</span>
+                        </h2>
+                        <p className="mt-6 text-[19px] text-[#86868b] max-w-xl mx-auto leading-relaxed">
+                            No more paper sign-in sheets. No more manual data entry.
+                            Teachers focus on teaching. Parents stay in the loop.
+                        </p>
+                    </FadeSection>
+                </div>
+            </section >
+
+            {/* Stats Section */}
+            < section className="py-24 md:py-32 px-6" >
+                <div className="max-w-4xl mx-auto">
+                    <FadeSection>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+                            <div>
+                                <div className="text-[48px] md:text-[56px] font-semibold tracking-tight text-[#1d1d1f]">50+</div>
+                                <div className="text-[15px] text-[#86868b] mt-1">Schools</div>
+                            </div>
+                            <div>
+                                <div className="text-[48px] md:text-[56px] font-semibold tracking-tight text-[#1d1d1f]">25K</div>
+                                <div className="text-[15px] text-[#86868b] mt-1">Students</div>
+                            </div>
+                            <div>
+                                <div className="text-[48px] md:text-[56px] font-semibold tracking-tight text-[#1d1d1f]">99.9%</div>
+                                <div className="text-[15px] text-[#86868b] mt-1">Uptime</div>
+                            </div>
+                            <div>
+                                <div className="text-[48px] md:text-[56px] font-semibold tracking-tight text-[#1d1d1f]">&lt;1s</div>
+                                <div className="text-[15px] text-[#86868b] mt-1">Check-in</div>
+                            </div>
+                        </div>
+                    </FadeSection>
+                </div>
+            </section >
+
+            {/* CTA Section */}
+            < section className="py-24 md:py-32 px-6 bg-[#1d1d1f]" >
+                <div className="max-w-3xl mx-auto text-center">
+                    <FadeSection>
+                        <h2 className="text-[40px] md:text-[48px] font-semibold tracking-[-0.03em] text-white">
+                            Ready to get started?
+                        </h2>
+                        <p className="mt-4 text-[19px] text-[#86868b] max-w-lg mx-auto">
+                            Join the schools already transforming their attendance.
+                        </p>
+                        <div className="mt-10">
+                            <Dialog open={demoOpen} onOpenChange={setDemoOpen}>
+                                <DialogTrigger asChild>
+                                    <LiquidGlassButton variant="primary" size="lg">
+                                        Get started
+                                    </LiquidGlassButton>
+                                </DialogTrigger>
+                            </Dialog>
+                        </div>
+                    </FadeSection>
+                </div>
+            </section >
 
             {/* Footer */}
-            <footer className="py-12 px-6 border-t border-white/5">
-                <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 text-sm text-gray-500">
-                    <div className="flex items-center gap-3">
-                        <span className="font-semibold text-white">{schoolInfo.name}</span>
-                    </div>
-                    <span>&copy; {new Date().getFullYear()} All rights reserved.</span>
+            < footer className="py-8 px-6 border-t border-[#d2d2d7]" >
+                <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-[#86868b]">
+                    <span>© {new Date().getFullYear()} {schoolInfo.name}</span>
                     <div className="flex items-center gap-6">
-                        <Link to="/auth" className="hover:text-red-500 transition-colors">Admin Login</Link>
-                        <Link to="/parent-login" className="hover:text-red-500 transition-colors">Parent Portal</Link>
+                        <Link to="/auth" className="hover:text-[#1d1d1f] transition-colors">
+                            Admin
+                        </Link>
+                        <Link to="/parent-login" className="hover:text-[#1d1d1f] transition-colors">
+                            Parent Portal
+                        </Link>
                     </div>
                 </div>
-            </footer>
-        </div>
+            </footer >
+        </div >
     );
 }
