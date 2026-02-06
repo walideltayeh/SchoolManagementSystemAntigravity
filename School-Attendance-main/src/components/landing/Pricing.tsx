@@ -95,9 +95,8 @@ export function Pricing() {
             {schoolPlans.map((plan, idx) => (
               <Card
                 key={plan.nameKey}
-                className={`relative overflow-hidden transition-all duration-500 hover-lift ${
-                  plan.popular ? "ring-2 ring-primary shadow-glow scale-105" : "hover:shadow-xl"
-                } ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
+                className={`relative overflow-hidden transition-all duration-500 hover-lift border-2 ${plan.popular ? "ring-2 ring-primary shadow-glow scale-105 border-primary" : "hover:shadow-xl border-border hover:border-primary/40"
+                  } ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
                 style={{ transitionDelay: `${idx * 100}ms` }}
               >
                 {plan.popular && (
@@ -132,11 +131,10 @@ export function Pricing() {
                     ))}
                   </ul>
                   <button
-                    className={`w-full py-3.5 rounded-xl font-semibold transition-all hover:scale-105 ${
-                      plan.popular 
-                        ? "gradient-hero text-white shadow-glow hover:shadow-xl" 
-                        : "bg-secondary hover:bg-secondary/80"
-                    }`}
+                    className={`w-full py-3.5 rounded-xl font-semibold transition-all hover:scale-105 border-2 ${plan.popular
+                        ? "gradient-hero text-white shadow-glow hover:shadow-xl border-primary"
+                        : "bg-secondary hover:bg-secondary/80 border-border hover:border-primary/50"
+                      }`}
                   >
                     {t("pricing.getStarted")}
                   </button>
@@ -150,7 +148,7 @@ export function Pricing() {
         <div className={`transition-all duration-700 delay-300 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
           <h3 className="text-xl font-semibold text-center mb-8">{t("pricing.parentOptions")}</h3>
           <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-            <Card className="hover-lift hover:shadow-xl transition-all">
+            <Card className="hover-lift hover:shadow-xl transition-all border-2 border-border hover:border-primary/40">
               <CardContent className="p-6 text-center">
                 <span className="inline-block px-3 py-1 rounded-full bg-secondary text-sm font-medium mb-4">
                   Option A
@@ -161,8 +159,8 @@ export function Pricing() {
                 <p className="text-sm text-muted-foreground mt-1">{t("pricing.setupAnnual")}</p>
               </CardContent>
             </Card>
-            
-            <Card className="ring-2 ring-accent shadow-glow-accent hover-lift relative overflow-hidden">
+
+            <Card className="ring-2 ring-accent shadow-glow-accent hover-lift relative overflow-hidden border-2 border-accent">
               <div className="absolute top-0 right-0 left-0 gradient-accent text-white text-center text-xs font-medium py-1.5">
                 {t("pricing.bestValue")}
               </div>
@@ -181,8 +179,8 @@ export function Pricing() {
                 </p>
               </CardContent>
             </Card>
-            
-            <Card className="hover-lift hover:shadow-xl transition-all">
+
+            <Card className="hover-lift hover:shadow-xl transition-all border-2 border-border hover:border-primary/40">
               <CardContent className="p-6 text-center">
                 <span className="inline-block px-3 py-1 rounded-full bg-secondary text-sm font-medium mb-4">
                   Option B

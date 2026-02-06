@@ -23,10 +23,10 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { 
-  Calculator, 
-  TrendingUp, 
-  DollarSign, 
+import {
+  Calculator,
+  TrendingUp,
+  DollarSign,
   Users,
   Shield,
   CheckCircle2,
@@ -67,10 +67,10 @@ export function BusinessCase() {
   const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
   const { t, isRTL } = useLanguage();
-  
+
   // Editable school configurations
   const [schoolConfigs, setSchoolConfigs] = useState(defaultSchoolConfigs);
-  
+
   // Pricing assumptions (customizable)
   const [pricingAssumptions, setPricingAssumptions] = useState({
     annualFeePerStudent: 125,
@@ -78,16 +78,16 @@ export function BusinessCase() {
     tabletCost: 300,
     gpsCost: 250,
   });
-  
+
   const [pricingInputs, setPricingInputs] = useState({
     annualFeePerStudent: "125",
     braceletCost: "15",
     tabletCost: "300",
     gpsCost: "250",
   });
-  
+
   const [showPricingSettings, setShowPricingSettings] = useState(false);
-  
+
   // Temporary input values to allow empty fields while typing
   const [inputValues, setInputValues] = useState<{
     students: string;
@@ -101,7 +101,7 @@ export function BusinessCase() {
 
   const schoolLabels = {
     small: t("businessCase.smallSchool"),
-    medium: t("businessCase.mediumSchool"), 
+    medium: t("businessCase.mediumSchool"),
     large: t("businessCase.largeSchool"),
   };
 
@@ -155,7 +155,7 @@ export function BusinessCase() {
   const financials = useMemo(() => {
     const { students, buses, rooms: classrooms } = currentConfig;
     const { annualFeePerStudent, braceletCost, tabletCost, gpsCost } = pricingAssumptions;
-    
+
     // ===== HARDWARE COSTS =====
     const braceletBuffer = 1.15; // 15% extra for spares
     const bracelets = Math.ceil(students * braceletBuffer);
@@ -172,7 +172,7 @@ export function BusinessCase() {
 
     const serverHardware = 2500;
     const networkEquipment = 1500;
-    
+
     const totalHardware = braceletTotal + tabletTotal + gpsTotal + chargingTotal + serverHardware + networkEquipment;
 
     // ===== INSTALLATION & SETUP =====
@@ -195,7 +195,7 @@ export function BusinessCase() {
     // ===== REVENUE (from parent subscriptions) =====
     // 100% enrollment - all students participate
     const enrolledStudents = students;
-    
+
     const annualSubscriptionRevenue = enrolledStudents * annualFeePerStudent;
     const replacementFeeRevenue = Math.ceil(enrolledStudents * 0.03) * 20; // 3% lose/damage
 
@@ -206,7 +206,7 @@ export function BusinessCase() {
     const hardwareCostPerStudent = Math.ceil(totalHardware / students);
     const tuitionTechFee = annualFeePerStudent + hardwareCostPerStudent;
     const dailySubscriptionCost = (annualFeePerStudent / 180).toFixed(2); // Fixed $0.69
-    
+
     // Dynamic total cost per student (includes hardware amortized over 3 years + annual costs)
     const hardwareAmortizedPerStudent = (totalHardware / 3) / students; // 3-year hardware life
     const annualCostPerStudent = totalAnnualCosts / students;
@@ -216,17 +216,17 @@ export function BusinessCase() {
     // ===== MULTI-YEAR PROJECTIONS =====
     const year1NetProfit = year1GrossRevenue - totalInitialInvestment - totalAnnualCosts;
     const yearlyNetProfit = recurringAnnualRevenue - totalAnnualCosts;
-    
+
     const projections = [1, 2, 3, 4, 5].map(year => {
-      const cumulativeRevenue = year === 1 
-        ? year1GrossRevenue 
+      const cumulativeRevenue = year === 1
+        ? year1GrossRevenue
         : year1GrossRevenue + (recurringAnnualRevenue * (year - 1));
       const cumulativeCosts = totalInitialInvestment + (totalAnnualCosts * year);
       const cumulativeProfit = cumulativeRevenue - cumulativeCosts;
       const yearRevenue = year === 1 ? year1GrossRevenue : recurringAnnualRevenue;
       const yearCosts = year === 1 ? totalInitialInvestment + totalAnnualCosts : totalAnnualCosts;
       const yearProfit = yearRevenue - yearCosts;
-      
+
       return {
         year,
         revenue: yearRevenue,
@@ -243,12 +243,12 @@ export function BusinessCase() {
       const yearRevenue = year === 1 ? year1GrossRevenue : recurringAnnualRevenue;
       const yearCosts = year === 1 ? totalInstallation + totalAnnualCosts : totalAnnualCosts; // No hardware cost
       const yearProfit = yearRevenue - yearCosts;
-      const cumulativeRevenue = year === 1 
-        ? year1GrossRevenue 
+      const cumulativeRevenue = year === 1
+        ? year1GrossRevenue
         : year1GrossRevenue + (recurringAnnualRevenue * (year - 1));
       const cumulativeCosts = totalInstallation + (totalAnnualCosts * year);
       const cumulativeProfit = cumulativeRevenue - cumulativeCosts;
-      
+
       return {
         year,
         revenue: yearRevenue,
@@ -400,9 +400,9 @@ YEAR 1 GROSS REVENUE: $${financials.revenue.year1Gross.toLocaleString()}
 ════════════════════════════════════════════════════════════════
 Year    Revenue         Costs           Net Profit      Cumulative
 ────────────────────────────────────────────────────────────────
-${financials.projections.map(row => 
-`Year ${row.year}   $${row.revenue.toLocaleString().padEnd(12)}  $${row.costs.toLocaleString().padEnd(12)}  ${row.profit >= 0 ? '+' : ''}$${row.profit.toLocaleString().padEnd(10)}  ${row.cumulativeProfit >= 0 ? '+' : ''}$${row.cumulativeProfit.toLocaleString()}`
-).join('\n')}
+${financials.projections.map(row =>
+      `Year ${row.year}   $${row.revenue.toLocaleString().padEnd(12)}  $${row.costs.toLocaleString().padEnd(12)}  ${row.profit >= 0 ? '+' : ''}$${row.profit.toLocaleString().padEnd(10)}  ${row.cumulativeProfit >= 0 ? '+' : ''}$${row.cumulativeProfit.toLocaleString()}`
+    ).join('\n')}
 ════════════════════════════════════════════════════════════════
 
 KEY METRICS
@@ -453,11 +453,10 @@ Generated on: ${new Date().toLocaleDateString()}
                 <button
                   key={key}
                   onClick={() => setSelectedScenario(key)}
-                  className={`px-6 py-3 rounded-xl text-sm font-medium transition-all ${
-                    selectedScenario === key
-                      ? "bg-primary text-primary-foreground shadow-lg"
-                      : "text-muted-foreground hover:text-foreground hover:bg-background"
-                  }`}
+                  className={`px-6 py-3 rounded-xl text-sm font-medium transition-all border-2 ${selectedScenario === key
+                      ? "bg-primary text-primary-foreground shadow-lg border-primary scale-105"
+                      : "text-muted-foreground hover:text-foreground hover:bg-background border-border hover:border-primary/50 hover:shadow-md hover:scale-102"
+                    }`}
                 >
                   <Building2 className={`w-4 h-4 inline ${isRTL ? 'ml-2' : 'mr-2'}`} />
                   {schoolLabels[key]}
@@ -489,7 +488,7 @@ Generated on: ${new Date().toLocaleDateString()}
                     value={inputValues.students}
                     onChange={(e) => handleInputChange("students", e.target.value)}
                     onBlur={() => handleInputBlur("students", 50)}
-                    className="text-lg font-semibold"
+                    className="text-lg font-semibold border-2 border-red-600 focus:ring-4 focus:ring-red-600/30 focus:border-red-600"
                   />
                   <p className="text-xs text-muted-foreground">{t("businessCase.enrollment")}</p>
                 </div>
@@ -506,7 +505,7 @@ Generated on: ${new Date().toLocaleDateString()}
                     value={inputValues.buses}
                     onChange={(e) => handleInputChange("buses", e.target.value)}
                     onBlur={() => handleInputBlur("buses", 0)}
-                    className="text-lg font-semibold"
+                    className="text-lg font-semibold border-2 border-red-600 focus:ring-4 focus:ring-red-600/30 focus:border-red-600"
                   />
                   <p className="text-xs text-muted-foreground">{t("businessCase.gpsTracking")}</p>
                 </div>
@@ -523,7 +522,7 @@ Generated on: ${new Date().toLocaleDateString()}
                     value={inputValues.rooms}
                     onChange={(e) => handleInputChange("rooms", e.target.value)}
                     onBlur={() => handleInputBlur("rooms", 5)}
-                    className="text-lg font-semibold"
+                    className="text-lg font-semibold border-2 border-red-600 focus:ring-4 focus:ring-red-600/30 focus:border-red-600"
                   />
                   <p className="text-xs text-muted-foreground">{t("businessCase.classroomsOffices")}</p>
                 </div>
@@ -574,7 +573,7 @@ Generated on: ${new Date().toLocaleDateString()}
                             value={pricingInputs.annualFeePerStudent}
                             onChange={(e) => handlePricingInputChange("annualFeePerStudent", e.target.value)}
                             onBlur={() => handlePricingInputBlur("annualFeePerStudent", 50)}
-                            className="pl-7 text-sm"
+                            className="pl-7 text-sm border-2 border-red-600 focus:ring-4 focus:ring-red-600/30 focus:border-red-600"
                           />
                         </div>
                       </div>
@@ -602,7 +601,7 @@ Generated on: ${new Date().toLocaleDateString()}
                             value={pricingInputs.braceletCost}
                             onChange={(e) => handlePricingInputChange("braceletCost", e.target.value)}
                             onBlur={() => handlePricingInputBlur("braceletCost", 5)}
-                            className="pl-7 text-sm"
+                            className="pl-7 text-sm border-2 border-red-600 focus:ring-4 focus:ring-red-600/30 focus:border-red-600"
                           />
                         </div>
                       </div>
@@ -630,7 +629,7 @@ Generated on: ${new Date().toLocaleDateString()}
                             value={pricingInputs.tabletCost}
                             onChange={(e) => handlePricingInputChange("tabletCost", e.target.value)}
                             onBlur={() => handlePricingInputBlur("tabletCost", 100)}
-                            className="pl-7 text-sm"
+                            className="pl-7 text-sm border-2 border-red-600 focus:ring-4 focus:ring-red-600/30 focus:border-red-600"
                           />
                         </div>
                       </div>
@@ -658,7 +657,7 @@ Generated on: ${new Date().toLocaleDateString()}
                             value={pricingInputs.gpsCost}
                             onChange={(e) => handlePricingInputChange("gpsCost", e.target.value)}
                             onBlur={() => handlePricingInputBlur("gpsCost", 100)}
-                            className="pl-7 text-sm"
+                            className="pl-7 text-sm border-2 border-red-600 focus:ring-4 focus:ring-red-600/30 focus:border-red-600"
                           />
                         </div>
                       </div>
@@ -712,20 +711,20 @@ Generated on: ${new Date().toLocaleDateString()}
 
         {/* Main Content Tabs */}
         <Tabs defaultValue="investment" className={`transition-all duration-700 delay-300 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 mb-8 h-auto p-1.5 bg-muted/50">
-            <TabsTrigger value="investment" className="py-3 text-xs sm:text-sm">
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 mb-8 h-auto p-1.5 bg-muted/50 border-2">
+            <TabsTrigger value="investment" className="py-3 text-xs sm:text-sm border-2 border-transparent data-[state=active]:border-primary data-[state=active]:shadow-md hover:border-primary/30 transition-all">
               <Calculator className={`w-4 h-4 ${isRTL ? 'ml-2' : 'mr-2'} hidden sm:inline`} />
               {t("businessCase.tabs.investment")}
             </TabsTrigger>
-            <TabsTrigger value="projections" className="py-3 text-xs sm:text-sm">
+            <TabsTrigger value="projections" className="py-3 text-xs sm:text-sm border-2 border-transparent data-[state=active]:border-primary data-[state=active]:shadow-md hover:border-primary/30 transition-all">
               <LineChart className={`w-4 h-4 ${isRTL ? 'ml-2' : 'mr-2'} hidden sm:inline`} />
               {t("businessCase.tabs.projections")}
             </TabsTrigger>
-            <TabsTrigger value="zero-risk" className="py-3 text-xs sm:text-sm">
+            <TabsTrigger value="zero-risk" className="py-3 text-xs sm:text-sm border-2 border-transparent data-[state=active]:border-primary data-[state=active]:shadow-md hover:border-primary/30 transition-all">
               <Shield className={`w-4 h-4 ${isRTL ? 'ml-2' : 'mr-2'} hidden sm:inline`} />
               {t("businessCase.tabs.zeroRisk")}
             </TabsTrigger>
-            <TabsTrigger value="data-value" className="py-3 text-xs sm:text-sm">
+            <TabsTrigger value="data-value" className="py-3 text-xs sm:text-sm border-2 border-transparent data-[state=active]:border-primary data-[state=active]:shadow-md hover:border-primary/30 transition-all">
               <Database className={`w-4 h-4 ${isRTL ? 'ml-2' : 'mr-2'} hidden sm:inline`} />
               {t("businessCase.tabs.dataValue")}
             </TabsTrigger>
@@ -966,7 +965,7 @@ Generated on: ${new Date().toLocaleDateString()}
                               </TooltipTrigger>
                               <TooltipContent side="top" className="max-w-xs">
                                 <p className="text-xs font-normal">
-                                  <strong>Year 1:</strong> Initial investment (${financials.totalInitialInvestment.toLocaleString()}) + Annual operating costs (${financials.annual.total.toLocaleString()})<br/>
+                                  <strong>Year 1:</strong> Initial investment (${financials.totalInitialInvestment.toLocaleString()}) + Annual operating costs (${financials.annual.total.toLocaleString()})<br />
                                   <strong>Years 2-5:</strong> Annual operating costs only (${financials.annual.total.toLocaleString()}/year)
                                 </p>
                               </TooltipContent>
@@ -1029,7 +1028,7 @@ Generated on: ${new Date().toLocaleDateString()}
                     <Calculator className="h-4 w-4 text-primary" />
                     Year 1 Calculation Example
                   </h4>
-                  
+
                   <div className="space-y-4">
                     {/* Revenue Breakdown */}
                     <div className="p-4 rounded-lg bg-accent/5 border border-accent/20">
@@ -1096,10 +1095,9 @@ Generated on: ${new Date().toLocaleDateString()}
                       <div key={row.year} className="flex items-center gap-4">
                         <span className="w-16 text-sm font-medium">{t("businessCase.yearLabel")} {row.year}</span>
                         <div className="flex-1 bg-muted rounded-full h-8 overflow-hidden">
-                          <div 
-                            className={`h-full rounded-full flex items-center justify-end pr-3 transition-all duration-700 ${
-                              row.cumulativeProfit >= 0 ? 'gradient-accent' : 'bg-destructive'
-                            }`}
+                          <div
+                            className={`h-full rounded-full flex items-center justify-end pr-3 transition-all duration-700 ${row.cumulativeProfit >= 0 ? 'gradient-accent' : 'bg-destructive'
+                              }`}
                             style={{ width: `${Math.max(Math.abs(percentage), 5)}%` }}
                           >
                             <span className="text-white text-sm font-bold">
@@ -1523,7 +1521,7 @@ Generated on: ${new Date().toLocaleDateString()}
                 {t("businessCase.downloadDesc")}
               </p>
               <div className="flex justify-center">
-                <button 
+                <button
                   onClick={handleDownloadPackage}
                   className="px-8 py-4 rounded-xl bg-white text-primary font-semibold hover:bg-white/90 transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
                 >
